@@ -11,7 +11,6 @@ extern (C) {
     }
 }
 // GMP function declarations
-pragma(lib, "./sorce/libgmp.a");
 extern (C) {
     void mpz_init(Z* integer);
     void mpz_clear(Z* integer);
@@ -19,9 +18,13 @@ extern (C) {
     void mpz_sub(Z* rop, const Z* op1, const Z* op2);
     int mpz_set_str(Z* rop, const char* str, int base);
     char* mpz_get_str(char* buf, int base, const Z* integer);
-    uint mpn_rshift(void* rp, const void* sp, size_t n, uint count);
+    alias _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = __gmpn_rshift(
+        void * rp,
+        const void * sp,
+        size_t n, uint count);
+    uint _mpn_rshift_(void* rp, const void* sp, size_t n, uint count);
 }
-
+pragma(lib, "./sorce/libgmp.a114");
 // D wrapper class
 class GmpInt
 {
@@ -44,8 +47,7 @@ class GmpInt
     }
     void opAssign(string op)(uint shift) if (op == ">>=")
     {
-        mpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
-        return;
+        _mpn_rshift_ (_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     GmpInt opAdd(GmpInt rhs)
     {

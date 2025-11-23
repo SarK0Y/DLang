@@ -3,7 +3,7 @@ module gmp_z;
 
 extern (C) {
 // GMP integer type
-    struct Mpz
+    struct Z
     {
         int _mp_alloc;
         int _mp_size;
@@ -11,19 +11,21 @@ extern (C) {
     }
 }
 // GMP function declarations
-pragma(lib, "libgmp.a");
+pragma(lib, "./sorce/libgmp.a");
 extern (C) {
-    void mpz_init(Mpz * integer);
-    void mpz_clear(Mpz* integer);
-    void mpz_add(Mpz* rop, const Mpz* op1, const Mpz* op2);
-    int mpz_set_str(Mpz* rop, const char* str, int base);
-    char* mpz_get_str(char* buf, int base, const Mpz* integer);
+    void mpz_init(Z* integer);
+    void mpz_clear(Z* integer);
+    void mpz_add(Z* rop, const Z* op1, const Z* op2);
+    void mpz_sub(Z* rop, const Z* op1, const Z* op2);
+    int mpz_set_str(Z* rop, const char* str, int base);
+    char* mpz_get_str(char* buf, int base, const Z* integer);
+    uint mpn_rshift(void* rp, const void* sp, size_t n, uint count);
 }
 
 // D wrapper class
 class GmpInt
 {
-    private Mpz _z;
+    private Z _z;
 
     this()
     {
@@ -35,16 +37,26 @@ class GmpInt
         mpz_clear(&_z);
     }
 
-    void opAssign( ref string str)
+    void opAssign(string op)( ref string str) if (op == "=")
     {
         mpz_set_str( &_z, str.ptr, 10);
         return;
     }
-
+    void opAssign(string op)(uint shift) if (op == ">>=")
+    {
+        mpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
+        return;
+    }
     GmpInt opAdd(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
         mpz_add(&result._z, &_z, &rhs._z);
+        return result;
+    }
+    GmpInt opSub(GmpInt rhs)
+    {
+        GmpInt result = new GmpInt();
+        mpz_sub(&result._z, &_z, &rhs._z);
         return result;
     }
 }

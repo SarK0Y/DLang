@@ -1,6 +1,6 @@
  // gmp_wrapper.d
 module gmp_z;
-
+import std.stdio;
 extern (C) {
 // GMP integer type
     struct Z
@@ -18,7 +18,8 @@ extern (C) {
     void __gmpz_sub(Z* rop, const Z* op1, const Z* op2);
     int __gmpz_set_str(Z* rop, const char* str, int base);
     int __gmpz_set(Z* rop, Z* rhs );
-    int __gmpz_set_ui(Z* rop, int rhs);
+    int __gmpz_set_ui(Z* rop, uint rhs);
+    int __gmpz_set_si(Z* rop, int rhs);
     int __gmpz_cmp(Z* rop, Z* rhs);
     char* __gmpz_get_str(char* buf, int base, const Z* integer);
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
@@ -33,7 +34,6 @@ pragma(lib, "gmp0");
 class GmpInt
 {
     private Z _z;
-
     this()
     {
         __gmpz_init(&_z);
@@ -46,7 +46,13 @@ class GmpInt
     {
         __gmpz_clear(&_z);
     }
-
+    Z val () {
+        return _z;
+    }
+    Z* ptr()
+    {
+        return &_z;
+    }
     void opAssign(string op)( string str) if (op == "=")
     {
         writeln ("void opAssign(string op)( string str) if (op ==  = )");
@@ -91,15 +97,16 @@ class GmpInt
         __gmpz_sub(&result._z, &_z, &rhs._z);
         return result;
     }
-    bool opEquals(R)(const R other) const
+    bool opEquals(int x )
     {
-        return __gmpz_cmp (&_z, &other);
+        auto g = new GmpInt(x);
+        return __gmpz_cmp (&_z, g.ptr() ) == 0;
     }
 }
 unittest
 {
     auto a = new GmpInt(2);
     a >>= 1;
-    assert(a == 1, true);
+    assert(a == 1);
 
 }

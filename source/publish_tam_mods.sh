@@ -2,14 +2,15 @@
 set prev_dir (pwd)
 echo $prev_dir
 cd ~/Dlang/TAM_mods/github/
+rm -rf ~/Dlang/TAM_mods/github/source/*
 echo (pwd)
 cp -f ../source/* ./source
 cp -f ../dub.sdl ./
-echo (git add dub.sdl source)
+git add dub.sdl source
 set m  "-m"
 set count 1
 while test "$argv[$count]" = "-m" 
-	set m "$m "$argv[(math "$count + 1")]
+	set m "$m "\"$argv[(math "$count + 1")]\"
 	echo $m
 	set count (math "$count + 2")
 end

@@ -105,8 +105,8 @@ class GmpInt
 }
 unittest
 {
-    auto a = new GmpInt(2);
+    auto a = new GmpInt(9);
     a >>= 1;
-    assert(a == 1);
+    assert(a == 4);
 
 }

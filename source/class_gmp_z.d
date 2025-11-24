@@ -12,21 +12,23 @@ extern (C) {
 }
 // GMP function declarations
 extern (C) {
-    void mpz_init(Z* integer);
-    void mpz_clear(Z* integer);
-    void mpz_add(Z* rop, const Z* op1, const Z* op2);
-    void mpz_sub(Z* rop, const Z* op1, const Z* op2);
-    int mpz_set_str(Z* rop, const char* str, int base);
-    int mpz_set(Z* rop, Z* rhs );
-    int mpz_cmp(Z* rop, Z* rhs);
-    char* mpz_get_str(char* buf, int base, const Z* integer);
-    alias _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = __gmpn_rshift(
+    void __gmpz_init(Z* integer);
+    void __gmpz_clear(Z* integer);
+    void __gmpz_add(Z* rop, const Z* op1, const Z* op2);
+    void __gmpz_sub(Z* rop, const Z* op1, const Z* op2);
+    int __gmpz_set_str(Z* rop, const char* str, int base);
+    int __gmpz_set(Z* rop, Z* rhs );
+    int __gmpz_set_ui(Z* rop, int rhs);
+    int __gmpz_cmp(Z* rop, Z* rhs);
+    char* __gmpz_get_str(char* buf, int base, const Z* integer);
+    //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
+    void __gmpn_rshift(
         void * rp,
         const void * sp,
         size_t n, uint count);
-    uint _mpn_rshift_(void* rp, const void* sp, size_t n, uint count);
+    //uint _mpn_rshift_(void* rp, const void* sp, size_t n, uint count);
 }
-pragma(lib, "./sorce/libgmp.a114");
+pragma(lib, "gmp0");
 // D wrapper class
 class GmpInt
 {
@@ -34,58 +36,69 @@ class GmpInt
 
     this()
     {
-        mpz_init(&_z);
+        __gmpz_init(&_z);
     }
-
+    this(return scope int x)
+    {
+        __gmpz_set_ui(&_z, x);
+    }
     ~this()
     {
-        mpz_clear(&_z);
+        __gmpz_clear(&_z);
     }
 
     void opAssign(string op)( string str) if (op == "=")
     {
-        mpz_set_str( &_z, str.ptr, 10);
+        writeln ("void opAssign(string op)( string str) if (op ==  = )");
+        __gmpz_set_str( &_z, str.ptr, 10);
         return;
     }
     void opAssign(string op)(GmpInt rhs) if (op == "=")
     {
-        mpz_set(&_z, &rhs );
+        writeln("void opAssign(string op)(GmpInt rhs) if (op == \" = \")");
+        __gmpz_set(&_z, &rhs );
         return;
     }
     void opAssign(string op)(int rhs) if (op == "=")
-    {
-        mpz_set_iu(&_z, &rhs);
+    {   
+        writeln ("void opAssign(string op)(int rhs) if (op == \" = \")");
+        __gmpz_set_ui(&_z, rhs);
         return;
     }
     void opAssign(string op)(uint rhs) if (op == "=")
     {
-        mpz_set_iu(&_z, &rhs);
+        writeln("void opAssign(string op)(uint rhs) if (op == \" = \")");
+        __gmpz_set_ui(&_z, rhs);
         return;
     }
     void opAssign(string op)(uint shift) if (op == ">>=")
     {
-        _mpn_rshift_ (_z._mp_d, _z._mp_d, _z._mp_size, shift);
+        __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
+    }
+    void opOpAssign(string op)(uint shift) if (op == ">>")
+    {
+        __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     GmpInt opAdd(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
-        mpz_add(&result._z, &_z, &rhs._z);
+        __gmpz_add(&result._z, &_z, &rhs._z);
         return result;
     }
     GmpInt opSub(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
-        mpz_sub(&result._z, &_z, &rhs._z);
+        __gmpz_sub(&result._z, &_z, &rhs._z);
         return result;
     }
     bool opEquals(R)(const R other) const
     {
-        return mpz_cmp (&_z, &other);
+        return __gmpz_cmp (&_z, &other);
     }
 }
 unittest
 {
-    GmpInt a = 2;
+    auto a = new GmpInt(2);
     a >>= 1;
     assert(a == 1, true);
 

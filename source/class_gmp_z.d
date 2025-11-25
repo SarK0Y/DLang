@@ -12,6 +12,7 @@ extern (C) {
 }
 // GMP function declarations
 extern (C) {
+//    import std.c.stdlib;
     void __gmpz_init(Z* integer);
     void __gmpz_clear(Z* integer);
     void __gmpz_add(Z* rop, const Z* op1, const Z* op2);
@@ -22,7 +23,10 @@ extern (C) {
     int __gmpz_set_si(Z* rop, int rhs);
     int __gmpz_cmp(Z* rop, Z* rhs);
     int __gmpz_cmp_si(Z* rop, int rhs);
-    char* __gmpz_get_str(char* buf, int base, const Z* integer);
+    void __gmpz_pow_ui (Z* rop, Z* rhs, uint shift );
+    int __gmpz_realloc (Z* rop, uint new_sise);
+    char* __gmpz_get_str(char* buf, int base, Z* integer);
+    void __gmp_printf (const (char* ) format, ...);
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
         void * rp,
@@ -115,7 +119,11 @@ class GmpInt
     void opOpAssign(string op)(uint shift) if (op == "<<")
     {
         writeln ("<<=");
-        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+        if (0 > __gmpz_realloc (&_z, (shift / 8) +1 )) {
+            writefln ("no space to realloc mpz");
+        }
+        __gmpz_pow_ui (&_z, &_z, shift);
+        //__gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
 
     void opBinary(string op)(uint shift) if (op == "<<")
@@ -144,6 +152,11 @@ class GmpInt
         // auto g = new GmpInt(x);
         return __gmpz_cmp(&_z, x ) == 0;
     }
+    char* strn () {
+        auto buf = new char [_z._mp_alloc];
+        __gmpz_get_str (&buf[0], 10, &_z);
+        return  &buf[0];
+    }
 }
 alias zz = GmpInt;
 mixin template gmp_zz () {
@@ -160,11 +173,12 @@ unittest
     auto d = 101.zz;
     a >>= 1;
     auto e = 1.zz;
-    e <<= 100;//_000_000; 
+    e <<= 1000;//_000_000; 
+    __gmpz_pow_ui (e.ptr, e.ptr, 0);
     assert(a == 4);
     assert(a != b);
     assert(c == b);
     assert(d == 101);
-    writeln ("size of e ", e._z._mp_size);
-
+    writefln ("size of e %d\nAlloc: %d\nval: %s", e._z._mp_size, e._z._mp_alloc, e.strn);
+    __gmp_printf ("print Z: %Z", e.ptr);
 }

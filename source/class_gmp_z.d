@@ -21,6 +21,7 @@ extern (C) {
     int __gmpz_set_ui(Z* rop, uint rhs);
     int __gmpz_set_si(Z* rop, int rhs);
     int __gmpz_cmp(Z* rop, Z* rhs);
+    int __gmpz_cmp_si(Z* rop, int rhs);
     char* __gmpz_get_str(char* buf, int base, const Z* integer);
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
@@ -42,6 +43,11 @@ class GmpInt
     {
         __gmpz_set_ui(&_z, x);
     }
+    this(return scope GmpInt x)
+    {
+        __gmpz_init(&_z);
+        __gmpz_set(&_z, x.ptr()  );
+    }
     ~this()
     {
         __gmpz_clear(&_z);
@@ -52,6 +58,9 @@ class GmpInt
     Z* ptr()
     {
         return &_z;
+    }
+    GmpInt dup () {
+        return new GmpInt ( this );
     }
     void opAssign(string op)( string str) if (op == "=")
     {
@@ -99,14 +108,21 @@ class GmpInt
     }
     bool opEquals(int x )
     {
-        auto g = new GmpInt(x);
-        return __gmpz_cmp (&_z, g.ptr() ) == 0;
+       // auto g = new GmpInt(x);
+        return __gmpz_cmp_si (&_z, x ) == 0;
+    }
+    bool opEquals(Z* x)
+    {
+        // auto g = new GmpInt(x);
+        return __gmpz_cmp(&_z, x ) == 0;
     }
 }
 unittest
 {
     auto a = new GmpInt(9);
+    auto b = a.dup;
     a >>= 1;
     assert(a == 4);
+    assert(a != b);
 
 }

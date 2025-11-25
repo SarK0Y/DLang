@@ -28,6 +28,10 @@ extern (C) {
         void * rp,
         const void * sp,
         size_t n, uint count);
+    void __gmpn_lshift(
+        void* rp,
+        const void* sp,
+        size_t n, uint count);
     //uint _mpn_rshift_(void* rp, const void* sp, size_t n, uint count);
 }
 pragma(lib, "gmp0");
@@ -100,11 +104,23 @@ class GmpInt
     }
     void opAssign(string op)(uint shift) if (op == ">>=")
     {
+        writeln(">>=");
         __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op)(uint shift) if (op == ">>")
     {
+        writeln(">>");
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+    }
+    void opOpAssign(string op)(uint shift) if (op == "<<")
+    {
+        writeln ("<<=");
+        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+    }
+
+    void opBinary(string op)(uint shift) if (op == "<<")
+    {
+        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     GmpInt opAdd(GmpInt rhs)
     {
@@ -143,9 +159,12 @@ unittest
     auto c = b;
     auto d = 101.zz;
     a >>= 1;
+    auto e = 1.zz;
+    e <<= 100;//_000_000; 
     assert(a == 4);
     assert(a != b);
     assert(c == b);
     assert(d == 101);
+    writeln ("size of e ", e._z._mp_size);
 
 }

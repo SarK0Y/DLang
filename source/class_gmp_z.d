@@ -77,8 +77,20 @@ class GmpInt
     void opAssign(string op)(int rhs) if (op == "=")
     {   
         writeln ("void opAssign(string op)(int rhs) if (op == \" = \")");
+        //__gmpz_init (&_z);
         __gmpz_set_ui(&_z, rhs);
-        return;
+    }
+    GmpInt opAssign(string op)(int rhs) if (op == "=")
+    {
+        writeln("void opAssign(string op)(int rhs) if (op == \" = \")");
+        //__gmpz_init (&_z);
+        __gmpz_set_ui(&_z, rhs);
+        return this;
+    }
+    static GmpInt opCall(int rhs)    {
+        writeln("static gmp opcall(string op)(int rhs) if (op == \" = \")");
+        
+        return new GmpInt ( rhs );
     }
     void opAssign(string op)(uint rhs) if (op == "=")
     {
@@ -117,12 +129,23 @@ class GmpInt
         return __gmpz_cmp(&_z, x ) == 0;
     }
 }
+alias zz = GmpInt;
+mixin template gmp_zz () {
+    
+}
+
 unittest
 {
+    
     auto a = new GmpInt(9);
     auto b = a.dup;
+    //auto c = GmpInt (101);
+    auto c = b;
+    auto d = 101.zz;
     a >>= 1;
     assert(a == 4);
     assert(a != b);
+    assert(c == b);
+    assert(d == 101);
 
 }

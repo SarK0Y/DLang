@@ -24,9 +24,11 @@ extern (C) {
     int __gmpz_cmp(Z* rop, Z* rhs);
     int __gmpz_cmp_si(Z* rop, int rhs);
     void __gmpz_pow_ui (Z* rop, Z* rhs, uint shift );
-    int __gmpz_realloc (Z* rop, uint new_sise);
+    int __gmpz_realloc2 (Z* rop, uint new_sise);
+    uint __gmpz_size (Z* rop );
     char* __gmpz_get_str(char* buf, int base, Z* integer);
     void __gmp_printf (const (char* ) format, ...);
+    immutable (char*) __gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
         void * rp,
@@ -67,13 +69,16 @@ class GmpInt
     {
         return &_z;
     }
+    void GMP_ver () {
+        __gmp_printf ("GMP ver: %s", __gmp_version );
+    }
     GmpInt dup () {
         return new GmpInt ( this );
     }
     void opAssign(string op)( string str) if (op == "=")
     {
         writeln ("void opAssign(string op)( string str) if (op ==  = )");
-        __gmpz_set_str( &_z, str.ptr, 10);
+        __gmpz_set_str( this.ptr, str.ptr, 10);
         return;
     }
     void opAssign(string op)(GmpInt rhs) if (op == "=")
@@ -119,13 +124,18 @@ class GmpInt
     void opOpAssign(string op)(uint shift) if (op == "<<")
     {
         writeln ("<<=");
-        if (0 > __gmpz_realloc (&_z, (shift / 8) +1 )) {
-            writefln ("no space to realloc mpz");
+        uint size = (shift / 8) + 1;
+        __gmpz_realloc2( & _z, size);
+        auto new_size = __gmpz_size( & _z);
+        if (size != new_size )  {
+            writefln ("no space to realloc mpz %d", new_size );
         }
-        __gmpz_pow_ui (&_z, &_z, shift);
-        //__gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+      //  __gmpz_pow_ui (&_z, &_z, shift);
+       __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
-
+    void prnt () {
+        __gmp_printf ("GmpInt: %Zd %p", this.ptr, this.ptr );
+    }
     void opBinary(string op)(uint shift) if (op == "<<")
     {
         __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
@@ -133,19 +143,19 @@ class GmpInt
     GmpInt opAdd(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
-        __gmpz_add(&result._z, &_z, &rhs._z);
+        __gmpz_add(result.ptr, this.ptr, rhs.ptr);
         return result;
     }
     GmpInt opSub(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
-        __gmpz_sub(&result._z, &_z, &rhs._z);
+        __gmpz_sub(result.ptr, this.ptr, rhs.ptr);
         return result;
     }
     bool opEquals(int x )
     {
        // auto g = new GmpInt(x);
-        return __gmpz_cmp_si (&_z, x ) == 0;
+        return __gmpz_cmp_si (this.ptr, x ) == 0;
     }
     bool opEquals(Z* x)
     {
@@ -154,7 +164,7 @@ class GmpInt
     }
     char* strn () {
         auto buf = new char [_z._mp_alloc];
-        __gmpz_get_str (&buf[0], 10, &_z);
+        __gmpz_get_str (&buf[0], 10, this.ptr );
         return  &buf[0];
     }
 }
@@ -167,18 +177,27 @@ unittest
 {
     
     auto a = new GmpInt(9);
+    a.prnt;
     auto b = a.dup;
     //auto c = GmpInt (101);
     auto c = b;
     auto d = 101.zz;
+    d.prnt;
     a >>= 1;
-    auto e = 1.zz;
-    e <<= 1000;//_000_000; 
-    __gmpz_pow_ui (e.ptr, e.ptr, 0);
+    auto e = 101.zz;
+    e <<= 1_000_000; 
+  //  __gmpz_pow_ui (e.ptr, e.ptr, 0);
+   // writefln("size of e %d\nAlloc: %d\nval: %s", e.ptr._mp_size, e.ptr._mp_alloc, e.strn);
+    __gmp_printf("print Z: %Zd %s", &a._z, e.strn );
+    e.prnt;
+    e.GMP_ver;
+    
+    ulong cnt = 0;
+    while ( cnt < 50_555_001 ) {
+        cnt ++;
+    }
     assert(a == 4);
     assert(a != b);
     assert(c == b);
     assert(d == 101);
-    writefln ("size of e %d\nAlloc: %d\nval: %s", e._z._mp_size, e._z._mp_alloc, e.strn);
-    __gmp_printf ("print Z: %Z", e.ptr);
 }

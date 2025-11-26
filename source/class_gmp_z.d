@@ -140,12 +140,17 @@ class GmpInt
     {
         writeln ("<<=");
         uint size = (shift / 8) + 1;
+        auto old_size = __gmpz_size (this.ptr);
+        if (old_size > size) {
+            __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+            return;
+        }
         //__gmpz_realloc2( & _z, size);
         auto more_bytes = malloc (size);
-        auto new_size = __gmpz_size( & _z);
-        if (size != new_size )  {
+        if (more_bytes == null )  {
             writefln ("no space to realloc mpz %d", new_size );
         }
+        auto tmp = 
       //  __gmpz_pow_ui (&_z, &_z, shift);
        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }

@@ -34,13 +34,13 @@ extern (C) {
     uint __gmpz_size (Z* rop );
     char* __gmpz_get_str(char* buf, int base, Z* integer);
     void __gmp_printf (const (char* ) format, ...);
-    void mpz_import(
+    void __gmpz_import(
         Z* rop,
         size_t count, //how many words to read
         int order, // endian of words
         size_t size, // size of buf
         int endian, // endian within word
-        size_t nails, // skip n last bits of word
+        size_t nails, // skip n most bits of word
         const void * buf 
     );
     immutable (char*) __gmp_version;
@@ -72,6 +72,31 @@ class GmpInt
     {
         __gmpz_init(&_z);
         __gmpz_set(&_z, x.ptr()  );
+    }
+    this (void* buf, size_t buf_size) {
+        __gmpz_init(&_z);
+        __gmpz_import (
+            &_z,
+            buf_size / ulong.sizeof,
+            LEAST_WORD_1ST,
+            buf_size,
+            LEAST_BYTE_1ST,
+            0,
+            buf
+        );
+    }
+   void _import (void* buf, ulong buf_size)
+    {
+        ulong count = buf_size/ulong.sizeof;
+        __gmpz_import(
+            &_z,
+            count,
+            LEAST_WORD_1ST,
+            buf_size,
+            LEAST_BYTE_1ST,
+            0,
+            buf
+        );
     }
     ~this()
     {
@@ -141,17 +166,19 @@ class GmpInt
         writeln ("<<=");
         uint size = (shift / 8) + 1;
         auto old_size = __gmpz_size (this.ptr);
-        if (old_size > size) {
+        if (old_size >= size) {
             __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
             return;
         }
         //__gmpz_realloc2( & _z, size);
         auto more_bytes = malloc (size);
         if (more_bytes == null )  {
-            writefln ("no space to realloc mpz %d", new_size );
+            writefln ("no space to realloc mpz" );
+            return;
         }
-        auto tmp = 
+        this._import (more_bytes, size); 
       //  __gmpz_pow_ui (&_z, &_z, shift);
+      writefln("<<=: last, size: %d, old size: %d", size, old_size);
        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void prnt () {
@@ -206,7 +233,7 @@ unittest
     d.prnt;
     a >>= 1;
     auto e = 101.zz;
-    e <<= 1_000_000; 
+    e <<= 1; //1_0;//00_000; 
   //  __gmpz_pow_ui (e.ptr, e.ptr, 0);
    // writefln("size of e %d\nAlloc: %d\nval: %s", e.ptr._mp_size, e.ptr._mp_alloc, e.strn);
     __gmp_printf("print Z: %Zd %s", &a._z, e.strn );

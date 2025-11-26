@@ -1,6 +1,12 @@
  // gmp_wrapper.d
 module gmp_z;
 import std.stdio;
+import core.stdc.stdlib : malloc, free;
+const int BIG_WORD_1ST = 1;
+const int LEAST_WORD_1ST = -1;
+const int HOST_ENDIAN = 0;
+const int BIG_BYTE_1ST = 1;
+const int LEAST_BYTE_1ST = -1;
 extern (C) {
 // GMP integer type
     struct Z
@@ -28,6 +34,15 @@ extern (C) {
     uint __gmpz_size (Z* rop );
     char* __gmpz_get_str(char* buf, int base, Z* integer);
     void __gmp_printf (const (char* ) format, ...);
+    void mpz_import(
+        Z* rop,
+        size_t count, //how many words to read
+        int order, // endian of words
+        size_t size, // size of buf
+        int endian, // endian within word
+        size_t nails, // skip n last bits of word
+        const void * buf 
+    );
     immutable (char*) __gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
@@ -125,7 +140,8 @@ class GmpInt
     {
         writeln ("<<=");
         uint size = (shift / 8) + 1;
-        __gmpz_realloc2( & _z, size);
+        //__gmpz_realloc2( & _z, size);
+        auto more_bytes = malloc (size);
         auto new_size = __gmpz_size( & _z);
         if (size != new_size )  {
             writefln ("no space to realloc mpz %d", new_size );

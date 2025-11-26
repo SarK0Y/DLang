@@ -233,7 +233,7 @@ unittest
     d.prnt;
     a >>= 1;
     auto e = 101.zz;
-    e <<= 1; //1_0;//00_000; 
+    e <<= 1_00;//00_000; 
   //  __gmpz_pow_ui (e.ptr, e.ptr, 0);
    // writefln("size of e %d\nAlloc: %d\nval: %s", e.ptr._mp_size, e.ptr._mp_alloc, e.strn);
     __gmp_printf("print Z: %Zd %s", &a._z, e.strn );

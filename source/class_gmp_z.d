@@ -33,12 +33,13 @@ extern (C) {
     int __gmpz_realloc2 (Z* rop, uint new_sise);
     uint __gmpz_size (Z* rop );
     char* __gmpz_get_str(char* buf, int base, Z* integer);
+    void __gmp_init ();
     void __gmp_printf (const (char* ) format, ...);
     void __gmpz_import(
         Z* rop,
         size_t count, //how many words to read
         int order, // endian of words
-        size_t size, // size of buf
+        size_t size, // size of word
         int endian, // endian within word
         size_t nails, // skip n most bits of word
         const void * buf 
@@ -77,9 +78,9 @@ class GmpInt
         __gmpz_init(&_z);
         __gmpz_import (
             &_z,
-            buf_size / ulong.sizeof,
+            buf_size / 8,
             LEAST_WORD_1ST,
-            buf_size,
+            1,
             LEAST_BYTE_1ST,
             0,
             buf
@@ -87,12 +88,12 @@ class GmpInt
     }
    void _import (void* buf, ulong buf_size)
     {
-        ulong count = buf_size/ulong.sizeof;
+        ulong count = buf_size/ 8;
         __gmpz_import(
             &_z,
             count,
             LEAST_WORD_1ST,
-            buf_size,
+            1,
             LEAST_BYTE_1ST,
             0,
             buf
@@ -110,6 +111,7 @@ class GmpInt
         return &_z;
     }
     void GMP_ver () {
+        //__gmp_init ();
         __gmp_printf ("GMP ver: %s", __gmp_version );
     }
     GmpInt dup () {
@@ -166,6 +168,7 @@ class GmpInt
         writeln ("<<=");
         uint size = (shift / 8) + 1;
         auto old_size = __gmpz_size (this.ptr);
+        writefln("<<=, old soze: %d", old_size);
         if (old_size >= size) {
             __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
             return;
@@ -176,10 +179,13 @@ class GmpInt
             writefln ("no space to realloc mpz" );
             return;
         }
+       /* byte* ch = cast (byte*)more_bytes;
+        ch[0] = 1; */
         this._import (more_bytes, size); 
       //  __gmpz_pow_ui (&_z, &_z, shift);
       writefln("<<=: last, size: %d, old size: %d", size, old_size);
        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+       writeln ("End lshift");
     }
     void prnt () {
         __gmp_printf ("GmpInt: %Zd %p", this.ptr, this.ptr );
@@ -233,7 +239,7 @@ unittest
     d.prnt;
     a >>= 1;
     auto e = 101.zz;
-    e <<= 1_00;//00_000; 
+    e <<= 1_000; 
   //  __gmpz_pow_ui (e.ptr, e.ptr, 0);
    // writefln("size of e %d\nAlloc: %d\nval: %s", e.ptr._mp_size, e.ptr._mp_alloc, e.strn);
     __gmp_printf("print Z: %Zd %s", &a._z, e.strn );
@@ -243,6 +249,17 @@ unittest
     ulong cnt = 0;
     while ( cnt < 50_555_001 ) {
         cnt ++;
+    }
+    zz tst_arr_2_mpz;
+    uint size = 1_00_000;
+    auto more_bytes = malloc(size);
+    /*byte* ch = cast (byte*)more_bytes;
+    ch[0] = 1; */
+    e <<= 1_00_000;
+    if (more_bytes != null)
+    {
+ //       tst_arr_2_mpz = new GmpInt (more_bytes, size );
+        writefln("done realloc mpz");
     }
     assert(a == 4);
     assert(a != b);

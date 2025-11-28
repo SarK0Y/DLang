@@ -78,7 +78,7 @@ class GmpInt
         __gmpz_init(&_z);
         __gmpz_import (
             &_z,
-            buf_size / 8,
+            (buf_size / 8) + 1,
             LEAST_WORD_1ST,
             1,
             LEAST_BYTE_1ST,
@@ -88,7 +88,7 @@ class GmpInt
     }
    void _import (void* buf, ulong buf_size)
     {
-        ulong count = buf_size/ 8;
+        ulong count = (buf_size/ 8) + 1;
         __gmpz_import(
             &_z,
             count,
@@ -182,7 +182,7 @@ class GmpInt
        /* byte* ch = cast (byte*)more_bytes;
         ch[0] = 1; */
         this._import (more_bytes, size); 
-      //  __gmpz_pow_ui (&_z, &_z, shift);
+       // __gmpz_pow_ui (&_z, &_z, shift);
       writefln("<<=: last, size: %d, old size: %d", size, old_size);
        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
        writeln ("End lshift");
@@ -194,13 +194,13 @@ class GmpInt
     {
         __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
-    GmpInt opAdd(GmpInt rhs)
+    GmpInt opBinary(string op: "+")(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
         __gmpz_add(result.ptr, this.ptr, rhs.ptr);
         return result;
     }
-    GmpInt opSub(GmpInt rhs)
+    GmpInt opBinary(string op : "-")(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
         __gmpz_sub(result.ptr, this.ptr, rhs.ptr);
@@ -210,6 +210,11 @@ class GmpInt
     {
        // auto g = new GmpInt(x);
         return __gmpz_cmp_si (this.ptr, x ) == 0;
+    }
+    bool opBinary(string op: "==")(zz x)
+    {
+        // auto g = new GmpInt(x);
+        return __gmpz_cmp(this.ptr, x.ptr) == 0;
     }
     bool opEquals(Z* x)
     {
@@ -239,7 +244,7 @@ unittest
     d.prnt;
     a >>= 1;
     auto e = 101.zz;
-    e <<= 1_000; 
+   // e <<= 1_000; 
   //  __gmpz_pow_ui (e.ptr, e.ptr, 0);
    // writefln("size of e %d\nAlloc: %d\nval: %s", e.ptr._mp_size, e.ptr._mp_alloc, e.strn);
     __gmp_printf("print Z: %Zd %s", &a._z, e.strn );
@@ -251,16 +256,29 @@ unittest
         cnt ++;
     }
     zz tst_arr_2_mpz;
-    uint size = 1_00_000;
+    uint size = 800_000_000;
     auto more_bytes = malloc(size);
     /*byte* ch = cast (byte*)more_bytes;
     ch[0] = 1; */
-    e <<= 1_00_000;
+    //e <<= 10_000_000;
+   writeln ("\n==================\n");
     if (more_bytes != null)
     {
- //       tst_arr_2_mpz = new GmpInt (more_bytes, size );
+        tst_arr_2_mpz = new GmpInt (more_bytes, size );
         writefln("done realloc mpz");
     }
+    auto _1 = new zz (1);
+    auto _2 = new zz (2);
+    auto res = _1+_2;
+    auto _3 = new zz (3);
+    auto cmp = (res == _3.ptr);
+    res.prnt;
+    writefln ("_1 + _2 == _3 = %d", cmp);
+    auto sub = _3 - _1;
+    sub.prnt;
+    auto sub_op = ( sub == _2);
+    assert(cmp == true);
+    //assert(sub_op == true);
     assert(a == 4);
     assert(a != b);
     assert(c == b);

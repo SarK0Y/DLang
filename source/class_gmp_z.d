@@ -159,7 +159,7 @@ class GmpInt
     }
     void opOpAssign(string op)(uint shift) if (op == ">>")
     {
-        writeln(">>");
+       // writeln(">>");
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op: "+")(zz y) {
@@ -233,7 +233,23 @@ alias zz = GmpInt;
 mixin template gmp_zz () {
     
 }
+import std.datetime;
+import std.format;
+void simply_print_time (string s) {
+    auto currentTime = Clock.currTime();
+    auto dt = cast(DateTime) currentTime;
 
+    // Control fractional precision
+    enum precision = 6; // Number of fractional digits (microseconds)
+
+    double fractional = currentTime.hnsecs / 10_000_000.0;
+    string fractionalStr = format("%.*f", precision, fractional).stripLeft('0');
+
+    auto customTime = format("%04d-%02d-%02d %02d:%02d:%02d%s",
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, fractionalStr);
+
+    writefln("%s: %s", s, customTime);
+}
 unittest
 {
     
@@ -258,7 +274,7 @@ unittest
         cnt ++;
     }
     zz tst_arr_2_mpz = new zz ();
-    uint size = 300_000_000;
+    uint size = 30_000_000;
     auto more_bytes = malloc(size);
     byte* ch = cast(byte*) more_bytes;
     //ch[0] = 1;
@@ -279,9 +295,13 @@ unittest
    // tst_arr_2_mpz = 1.zz;
     //tst_arr_2_mpz <<= 7_0_000;
     writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
+    simply_print_time ("Start");
+    auto dt = tst_arr_2_mpz.dup;
     for (int i = 0; i < 1_000_000; i++) {
-        tst_arr_2_mpz += tst_arr_2_mpz;
+        tst_arr_2_mpz += dt;
+        dt >>= 1;
     }
+    simply_print_time ("End");
     tst_arr_2_mpz.prnt;
     writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);
     auto _1 = new zz (1);

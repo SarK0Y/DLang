@@ -242,11 +242,11 @@ void simply_print_time (string s) {
     // Control fractional precision
     enum precision = 6; // Number of fractional digits (microseconds)
 
-    double fractional = currentTime.hnsecs / 10_000_000.0;
-    string fractionalStr = format("%.*f", precision, fractional).stripLeft('0');
+    //double fractional = cast (double)currentTime.hnsecs / 10_000_000.0;
+    //string fractionalStr = format("%.*f", precision, fractional);
 
-    auto customTime = format("%04d-%02d-%02d %02d:%02d:%02d%s",
-        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, fractionalStr);
+    auto customTime = format("%04d-%02d-%02d %02d:%02d:%02d.",
+        dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second); // dt.nsecs);
 
     writefln("%s: %s", s, customTime);
 }

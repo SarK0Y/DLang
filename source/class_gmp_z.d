@@ -163,6 +163,9 @@ class GmpInt
         writeln(">>");
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
+    void opOpAssign(string op: "+")(zz y) {
+        __gmpz_add (&_z, &_z, y.ptr);
+    }
     void opOpAssign(string op)(uint shift) if (op == "<<")
     {
         writeln ("<<=");
@@ -266,6 +269,9 @@ unittest
     {
         tst_arr_2_mpz = new GmpInt (more_bytes, size );
         writefln("done realloc mpz");
+    }
+    for (int i = 0; i < 1_000_000; i++) {
+        tst_arr_2_mpz += tst_arr_2_mpz;
     }
     auto _1 = new zz (1);
     auto _2 = new zz (2);

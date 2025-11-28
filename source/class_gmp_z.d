@@ -261,18 +261,26 @@ unittest
     zz tst_arr_2_mpz;
     uint size = 800_000_000;
     auto more_bytes = malloc(size);
-    /*byte* ch = cast (byte*)more_bytes;
-    ch[0] = 1; */
+    byte* ch = cast(byte*) more_bytes;
+    //ch[0] = 1;
+    for (uint i = 0; i < size; i++) {
+        ch[i] = cast(byte)255;
+    }
     //e <<= 10_000_000;
    writeln ("\n==================\n");
     if (more_bytes != null)
     {
-        tst_arr_2_mpz = new GmpInt (more_bytes, size );
+        tst_arr_2_mpz._import(more_bytes, size );
         writefln("done realloc mpz");
     }
+    tst_arr_2_mpz = 1.zz;
+    tst_arr_2_mpz <<= 7_0_000;
+    writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
     for (int i = 0; i < 1_000_000; i++) {
         tst_arr_2_mpz += tst_arr_2_mpz;
     }
+    tst_arr_2_mpz.prnt;
+    writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);
     auto _1 = new zz (1);
     auto _2 = new zz (2);
     auto res = _1+_2;

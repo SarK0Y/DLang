@@ -88,13 +88,12 @@ class GmpInt
     }
    void _import (void* buf, ulong buf_size)
     {
-        ulong count = (buf_size/ 8) + 1;
         __gmpz_import(
             &_z,
-            count,
-            LEAST_WORD_1ST,
+            buf_size,
+            BIG_WORD_1ST,
             1,
-            LEAST_BYTE_1ST,
+            BIG_BYTE_1ST,
             0,
             buf
         );
@@ -258,8 +257,8 @@ unittest
     while ( cnt < 50_555_001 ) {
         cnt ++;
     }
-    zz tst_arr_2_mpz;
-    uint size = 800_000_000;
+    zz tst_arr_2_mpz = new zz ();
+    uint size = 300_000_000;
     auto more_bytes = malloc(size);
     byte* ch = cast(byte*) more_bytes;
     //ch[0] = 1;
@@ -270,11 +269,15 @@ unittest
    writeln ("\n==================\n");
     if (more_bytes != null)
     {
-        tst_arr_2_mpz._import(more_bytes, size );
+        writefln("done alloc arr");
+        tst_arr_2_mpz._import(more_bytes, size);
+       // tst_arr_2_mpz.ptr._mp_alloc = size;
+        //tst_arr_2_mpz.ptr._mp_d = more_bytes;
         writefln("done realloc mpz");
     }
-    tst_arr_2_mpz = 1.zz;
-    tst_arr_2_mpz <<= 7_0_000;
+    free (more_bytes);
+   // tst_arr_2_mpz = 1.zz;
+    //tst_arr_2_mpz <<= 7_0_000;
     writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
     for (int i = 0; i < 1_000_000; i++) {
         tst_arr_2_mpz += tst_arr_2_mpz;

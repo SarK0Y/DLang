@@ -88,6 +88,7 @@ class GmpInt
     }
    void _import (void* buf, ulong buf_size)
     {
+        writeln ("buf size for _import: ", buf_size);
         __gmpz_import(
             &_z,
             buf_size,
@@ -274,13 +275,14 @@ unittest
         cnt ++;
     }
     zz tst_arr_2_mpz = new zz ();
-    uint size = 30_000_000;
+    uint size = 3_000_000;
     auto more_bytes = malloc(size);
     byte* ch = cast(byte*) more_bytes;
     //ch[0] = 1;
-    for (uint i = 0; i < size; i++) {
+    /*for (uint i = 0; i < size; i++) {
         ch[i] = cast(byte)255;
-    }
+    }*/
+    ch[0] = cast(byte)255;
     //e <<= 10_000_000;
    writeln ("\n==================\n");
     if (more_bytes != null)
@@ -295,14 +297,18 @@ unittest
    // tst_arr_2_mpz = 1.zz;
     //tst_arr_2_mpz <<= 7_0_000;
     writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
+    tst_arr_2_mpz.prnt;
+    Z* _z = tst_arr_2_mpz.ptr;
     simply_print_time ("Start");
     auto dt = tst_arr_2_mpz.dup;
+    auto _dt = dt.ptr;
     for (int i = 0; i < 1_000_000; i++) {
-        tst_arr_2_mpz += dt;
-        dt >>= 1;
+        __gmpz_add (_z, _z, _dt);
+        //tst_arr_2_mpz += dt;
+       // dt >>= 1;
+       __gmpn_rshift(_dt._mp_d, _dt._mp_d, _dt._mp_size, 1);
     }
     simply_print_time ("End");
-    tst_arr_2_mpz.prnt;
     writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);
     auto _1 = new zz (1);
     auto _2 = new zz (2);

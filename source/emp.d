@@ -29,10 +29,17 @@ extern (C) void EMP (
         target = File (file_target, "rb");
         key = File (Key, "rb");
         fout = File (file_out, "w+");
+        void [] target_arr =read(file_target);
+        void [] key_arr = read (Key);
+        zz target_zz, key_zz;
+        target_zz._import (cast(void*)target_arr, target.size);
+        key_zz._import (cast (void*)key_arr, key.size);
     }
     catch (FileException e ) {
         writeln ("Failed to prepare files.", e.msg);
     }
 
 
+}
+void __emp (zz* target, zz* key) {
 }

@@ -61,6 +61,8 @@ pragma(lib, "gmp0");
 class GmpInt
 {
     private Z _z;
+    public: alias zz = GmpInt;
+    
     this()
     {
         __gmpz_init(&_z);
@@ -224,6 +226,18 @@ class GmpInt
         // auto g = new GmpInt(x);
         return __gmpz_cmp(&_z, x ) == 0;
     }
+    bool opEquals(zz* x)
+    {
+        return __gmpz_cmp(&_z, x.ptr) == 0;
+    }
+    int opCmp(Z* x)
+    {
+        return __gmpz_cmp(&_z, x);
+    }
+    int opCmp(GmpInt* x)
+    {
+        return __gmpz_cmp(&_z, x.ptr);
+    }
     char* strn () {
         auto buf = new char [_z._mp_alloc];
         __gmpz_get_str (&buf[0], 10, this.ptr );
@@ -299,7 +313,7 @@ unittest
     writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
    // tst_arr_2_mpz.prnt;
     Z* _z = tst_arr_2_mpz.ptr;
-    simply_print_time ("Start");
+    /*simply_print_time ("Start");
     auto dt = tst_arr_2_mpz.dup;
     auto _dt = dt.ptr;
     for (int i = 0; i < 1_000_000; i++) {
@@ -309,7 +323,7 @@ unittest
       // __gmpn_rshift(_dt._mp_d, _dt._mp_d, _dt._mp_size, 1);
     }
     simply_print_time ("End");
-    writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);
+    writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);*/
     auto _1 = new zz (1);
     auto _2 = new zz (2);
     auto res = _1+_2;
@@ -321,7 +335,9 @@ unittest
     sub.prnt;
     auto sub_op = ( sub == _2);
     assert(cmp == true);
-    //assert(sub_op == true);
+    assert(_1 < _2.ptr);
+    assert(_3 > &_2);
+    assert(_3 == &_3);
     assert(a == 4);
     assert(a != b);
     assert(c == b);

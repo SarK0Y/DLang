@@ -42,4 +42,6 @@ extern (C) void EMP (
 
 }
 void __emp (zz* target, zz* key) {
+    auto dt = key.dup;
+    
 }

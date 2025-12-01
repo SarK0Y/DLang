@@ -1,6 +1,6 @@
 import core.stdc.stdio;
-//import zmath;
-//import gmp.z;
+import std.file;
+import srd.exception;
 import gmp_z;
 import std.stdio;
 import std.string;
@@ -9,12 +9,17 @@ extern (C) void EMP (
     ref string file_target,
     ref string Key,
     ref string extra_Key,
-
+    int word_order = 1,
+    int byte_order = 1
 ) {
-    /*alias Z = MpZ;
-    Z a;
-    a = 0; */
-    GmpInt a;
+    auto a = new zz (0);
     string* tst = null;
+    try {
+        if (exists (file_target) ) {
+        }
+    }
+    catch (FileException e ) {
+    }
+
 
 }

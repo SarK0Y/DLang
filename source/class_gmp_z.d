@@ -282,7 +282,7 @@ unittest
     /*for (uint i = 0; i < size; i++) {
         ch[i] = cast(byte)255;
     }*/
-    ch[0] = cast(byte)255;
+    ch[6] = cast(byte)255;
     //e <<= 10_000_000;
    writeln ("\n==================\n");
     if (more_bytes != null)
@@ -297,16 +297,16 @@ unittest
    // tst_arr_2_mpz = 1.zz;
     //tst_arr_2_mpz <<= 7_0_000;
     writefln("tst_arr_2_mpz size %d", tst_arr_2_mpz.ptr._mp_size);
-    tst_arr_2_mpz.prnt;
+   // tst_arr_2_mpz.prnt;
     Z* _z = tst_arr_2_mpz.ptr;
     simply_print_time ("Start");
     auto dt = tst_arr_2_mpz.dup;
     auto _dt = dt.ptr;
     for (int i = 0; i < 1_000_000; i++) {
-        __gmpz_add (_z, _z, _dt);
-        //tst_arr_2_mpz += dt;
-       // dt >>= 1;
-       __gmpn_rshift(_dt._mp_d, _dt._mp_d, _dt._mp_size, 1);
+       // __gmpz_add (_z, _z, _dt);
+        tst_arr_2_mpz += dt;
+        dt >>= 1;
+      // __gmpn_rshift(_dt._mp_d, _dt._mp_d, _dt._mp_size, 1);
     }
     simply_print_time ("End");
     writefln ("tst_arr_2_mpz alloc %d", tst_arr_2_mpz.ptr._mp_alloc);

@@ -191,6 +191,10 @@ class GmpInt
     void opOpAssign(string op: "+")(zz y) {
         __gmpz_add (&_z, &_z, y.ptr);
     }
+    void opOpAssign(string op : "-")(zz y)
+    {
+        __gmpz_sub(&_z, &_z, y.ptr);
+    }
     void opOpAssign(string op)(uint shift) if (op == "<<")
     {
         writeln ("<<=");
@@ -218,9 +222,19 @@ class GmpInt
     void prnt () {
         __gmp_printf ("GmpInt: %Zd %p", this.ptr, this.ptr );
     }
-    void opBinary(string op)(uint shift) if (op == "<<")
+    zz opBinary(string op)(uint shift) if (op == "<<")
     {
-        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+        auto res = this.dup;
+        auto ptr = this.ptr;
+        __gmpn_lshift(ptr._mp_d, ptr._mp_d, ptr._mp_size, shift);
+        return res;
+    }
+    zz opBinary(string op)(uint shift) if (op == ">>")
+    {
+        auto res = this.dup;
+        auto ptr = res.ptr;
+        __gmpn_rshift(ptr._mp_d, ptr._mp_d, ptr._mp_size, shift);
+        return res;
     }
     GmpInt opBinary(string op: "+")(GmpInt rhs)
     {

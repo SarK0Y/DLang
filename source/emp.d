@@ -42,7 +42,17 @@ extern (C) void EMP (
 
 }
 void __emp (zz* target, zz* key) {
-    auto dt = key.dup;
+    auto dt = key.dup >> 1;
+    auto map = new zz (0);
+    ulong cnt = 0;
     while (*key != target) {
+        if (*key > target) {
+            *key -= dt;
+            map.setbit (cnt);
+        } else {
+            *key += dt;
+        }
+        dt >>= 1;
+        cnt++;
     }
 }

@@ -258,6 +258,16 @@ class GmpInt
         // auto g = new GmpInt(x);
         return __gmpz_cmp(this.ptr, x.ptr) == 0;
     }
+    int opBinary(string op : "_>")(zz x) // useless
+    {
+        // auto g = new GmpInt(x);
+        return __gmpz_cmp(this.ptr, x.ptr) == 1;
+    }
+    bool opBinary(string op : "_<")(zz x) // useless
+    {
+        // auto g = new GmpInt(x);
+        return __gmpz_cmp(this.ptr, x.ptr) == -1;
+    }
     bool opEquals(Z* x)
     {
         // auto g = new GmpInt(x);
@@ -375,6 +385,7 @@ unittest
     assert(_1 < _2.ptr);
     assert(_3 > &_2);
     assert(_3 == &_3);
+    assert(_3 == _3);
     assert(a == 4);
     assert(a != b);
     assert(c == b);

@@ -26,6 +26,9 @@ extern (C) {
     int __gmpz_set_str(Z* rop, const char* str, int base);
     int __gmpz_set(Z* rop, Z* rhs );
     int __gmpz_set_ui(Z* rop, uint rhs);
+    void __gmpz_setbit(Z* rop, ulong rhs);
+    void __gmpz_clrbit(Z* rop, ulong rhs);
+    bool __gmpz_tstbit(Z* rop, ulong rhs);
     int __gmpz_set_si(Z* rop, int rhs);
     int __gmpz_cmp(Z* rop, Z* rhs);
     int __gmpz_cmp_si(Z* rop, int rhs);
@@ -43,6 +46,15 @@ extern (C) {
         int endian, // endian within word
         size_t nails, // skip n most bits of word
         const void * buf 
+    );
+    void __gmpz_export(
+        Z* rop,
+        size_t count, //how many words to read
+        int order, // endian of words
+        size_t size, // size of word
+        int endian, // endian within word
+        size_t nails, // skip n most bits of word
+        const void* buf
     );
     immutable (char*) __gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
@@ -118,6 +130,17 @@ class GmpInt
     }
     GmpInt dup () {
         return new GmpInt ( this );
+    }
+    bool tstbit (ulong x) {
+        return __gmpz_tstbit (&_z, x);
+    }
+    void setbit(ulong x)
+    {
+        return __gmpz_setbit(&_z, x);
+    }
+    void clrbit(ulong x)
+    {
+        return __gmpz_clrbit(&_z, x);
     }
     void opAssign(string op)( string str) if (op == "=")
     {

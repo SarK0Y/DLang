@@ -39,6 +39,12 @@ extern (C) void EMP (
         zz target_zz, key_zz;
         target_zz._import (cast(void*)target_arr, target.size);
         key_zz._import (cast (void*)key_arr, key.size);
+        auto map = __emp (&target_zz, &key_zz);
+        auto dat = map.dat._export ();
+        if (dat == null) {
+            writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);
+            return;
+        }
     }
     catch (FileException e ) {
         writeln ("Failed to prepare files.", e.msg);

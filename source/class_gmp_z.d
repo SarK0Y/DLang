@@ -48,13 +48,13 @@ extern (C) {
         const void * buf 
     );
     void __gmpz_export(
-        Z* rop,
+        const void * buf,
         size_t count, //how many words to read
         int order, // endian of words
         size_t size, // size of word
         int endian, // endian within word
         size_t nails, // skip n most bits of word
-        const void* buf
+        Z* op
     );
     immutable (char*) __gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
@@ -116,6 +116,27 @@ class GmpInt
             0,
             buf
         );
+    }
+    void* _export()
+    {
+        auto buf_size = __gmpz_size( & _z);
+        auto buf = malloc (
+            buf_size
+        );
+        if (buf == null) {
+            writeln ("Can't allocate memory ", __FILE_FULL_PATH__, __LINE__);
+            return null;
+        }
+        __gmpz_export(
+            buf,
+            buf_size,
+            BIG_WORD_1ST,
+            1,
+            BIG_BYTE_1ST,
+            0,
+            &_z
+        );
+        return buf;
     }
     ~this()
     {

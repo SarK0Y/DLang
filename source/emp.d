@@ -9,6 +9,16 @@ import std.uni;
 extern (C) struct ret_emp {
     zz* dat;
     ulong size;
+    static ret_emp mk () {
+        ret_emp re = ret_emp (null, 0);
+        return re;        
+    }
+}
+ret_emp* save_for_unitst (ret_emp x) {
+    static ret_emp sav = ret_emp.mk();
+    if (x.dat != null) {
+        sav = x;
+    } return &sav;
 }
 extern (C) void EMP (
     ref string file_target,

@@ -1,4 +1,5 @@
 import core.stdc.stdio;
+import core.memory;
 import std.file;
 import std.exception;
 import gmp_z;
@@ -59,5 +60,7 @@ ret_emp __emp (zz* target, zz* key) {
         dt >>= 1;
         cnt++;
     }
+    //GC.free (dt); // for void*
+    dt.destroy;
     return ret_emp (map, cnt);
 }

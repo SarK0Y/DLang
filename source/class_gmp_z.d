@@ -100,6 +100,10 @@ class GmpInt
             buf
         );
     }
+    static zz* mk () {
+        auto ret = new zz (0);
+        return cast (zz*)ret;
+    }
    void _import (void* buf, ulong buf_size)
     {
         writeln ("buf size for _import: ", buf_size);

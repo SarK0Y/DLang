@@ -5,6 +5,10 @@ import gmp_z;
 import std.stdio;
 import std.string;
 import std.uni;
+extern (C) struct ret_emp {
+    zz* dat;
+    ulong size;
+}
 extern (C) void EMP (
     ref string file_target,
     ref string Key,
@@ -41,9 +45,9 @@ extern (C) void EMP (
 
 
 }
-void __emp (zz* target, zz* key) {
+ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
-    auto map = new zz (0);
+    zz* map = zz.mk();
     ulong cnt = 0;
     while (*key != target) {
         if (*key > target) {
@@ -55,4 +59,5 @@ void __emp (zz* target, zz* key) {
         dt >>= 1;
         cnt++;
     }
+    return ret_emp (map, cnt);
 }

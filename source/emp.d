@@ -51,6 +51,7 @@ extern (C) void EMP (
         key_zz._import (cast (void*)key_arr, key.size);
         auto map = __emp (&target_zz, &key_zz);
         auto dat = map.dat._export ();
+        save_for_unitst (map);
         if (dat == null) {
             writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);
             return;

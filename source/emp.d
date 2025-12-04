@@ -8,7 +8,7 @@ import std.string;
 import std.uni;
 extern (C) struct ret_emp {
     zz* dat;
-    ulong size;
+    size_t size;
     static ret_emp mk () {
         ret_emp re = ret_emp (null, 0);
         return re;        
@@ -66,7 +66,7 @@ extern (C) void EMP (
 ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
     zz* map = zz.mk();
-    ulong cnt = 0;
+    size_t cnt = 0;
     while (*key != target) {
         if (*key > target) {
             *key -= dt;
@@ -81,10 +81,12 @@ ret_emp __emp (zz* target, zz* key) {
     dt.destroy;
     return ret_emp (map, cnt);
 }
-void __tstdecode_emp (ret_emp* take_emp, string key_file, string decoded ) {
+void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string decoded ) {
     if (!exists(key_file))
     {
-        writefln("Dear User, file to compress/encode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
+        writefln("Dear User, file to decompress/decode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
+    size_t msb = take_emp.dat.msb;
+    
 }

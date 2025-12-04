@@ -34,6 +34,7 @@ extern (C) {
     int __gmpz_cmp_si(Z* rop, int rhs);
     void __gmpz_pow_ui (Z* rop, Z* rhs, uint shift );
     int __gmpz_realloc2 (Z* rop, uint new_sise);
+    size_t __gmpz_sizeinbase (Z* op, int base);
     uint __gmpz_size (Z* rop );
     char* __gmpz_get_str(char* buf, int base, Z* integer);
     void __gmp_init ();
@@ -104,6 +105,9 @@ class GmpInt
         auto ret = new zz (0);
         return cast (zz*)ret;
     }
+    size_t msb () {
+        return __gmpz_sizeinbase (&_z, 2);
+    }
    void _import (void* buf, ulong buf_size)
     {
         writeln ("buf size for _import: ", buf_size);
@@ -124,7 +128,7 @@ class GmpInt
             buf_size
         );
         if (buf == null) {
-            writeln ("Can't allocate memory ", __FILE_FULL_PATH__, __LINE__);
+            writeln ("Can't allocate memory %s %s", __FILE_FULL_PATH__, __LINE__);
             return null;
         }
         __gmpz_export(

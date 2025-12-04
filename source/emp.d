@@ -33,12 +33,12 @@ extern (C) void EMP (
     File target, key, fout;
     try {
         if (!exists (file_target) ) {
-            writeln ("Dear User, file to compress/decode doesn't exist.");
+            writeln ("Dear User, file to compress/encode doesn't exist.");
             return;
         }
         if (!exists(Key))
         {
-            writeln("Dear User, Key file for compression/decoding doesn't exist.");
+            writeln("Dear User, Key file for compression/encoding doesn't exist.");
             return;
         }
         target = File (file_target, "rb");
@@ -80,4 +80,11 @@ ret_emp __emp (zz* target, zz* key) {
     //GC.free (dt); // for void*
     dt.destroy;
     return ret_emp (map, cnt);
+}
+void __tstdecode_emp (ret_emp* take_emp, string key_file, string decoded ) {
+    if (!exists(key_file))
+    {
+        writefln("Dear User, file to compress/encode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
+        return;
+    }
 }

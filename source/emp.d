@@ -98,8 +98,14 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
     key_arr.destroy;
     size_t msb = take_emp.dat.msb;
     size_t cnt = 0;
+    auto dat = take_emp.dat;
     size_t number_of_all_steps = take_emp.size;
+    auto dt = key.dup >> 1;
     for (; cnt < msb; cnt++) {
-
+        if ( dat.tstbit (cnt) ) {
+            key -= dt;
+        } else {
+            key += dt;
+        } dt >>= 1;
     }
 }

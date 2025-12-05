@@ -87,6 +87,19 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         writefln("Dear User, file to decompress/decode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
+    try {
+        auto key = File(key_file, "rb");
+        key.close ();
+    } catch (FileException e) {
+        writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
+    }
+    void [] key_arr = read (key_file);
+    auto key = new zz (key_arr.ptr, key_arr.length);
+    key_arr.destroy;
     size_t msb = take_emp.dat.msb;
-    
+    size_t cnt = 0;
+    size_t number_of_all_steps = take_emp.size;
+    for (; cnt < msb; cnt++) {
+
+    }
 }

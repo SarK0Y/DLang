@@ -109,3 +109,24 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         } dt >>= 1;
     }
 }
+void prnt (string g) {
+    writeln (g.ptr,"\n");
+}
+string _Msg( string msg)
+{
+    string out0 = "writefln(\"%s \n%s. \n%s %s\","~msg~", __FILE_FULL_PATH__, __LINE__);";
+    prnt (out0);
+    return out0;
+}
+template Msg(const char [] msg )
+{
+   //string x = _Msg (msg);
+   const char [] out0 = "writefln(\"%s %s %s\"," ~"\""~ msg ~"\""~", __FILE_FULL_PATH__, __LINE__);";
+}
+unittest
+{
+    writeln ("\n\ntst mod emp.d\n");
+    mixin Msg!("tst mixin");
+   // write (out0);
+  mixin (out0);
+}

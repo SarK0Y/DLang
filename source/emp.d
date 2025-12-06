@@ -109,6 +109,10 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         } dt >>= 1;
     }
 }
+pragma (inline, true );
+ void msg_verbose (string msg) {
+    writefln ("Msg: %s\nSource: %s\nLine: %s", msg, __FILE_FULL_PATH__, __LINE__);
+}
 void prnt (string g) {
     writeln (g.ptr,"\n");
 }
@@ -129,4 +133,6 @@ unittest
     mixin Msg!("tst mixin");
    // write (out0);
   mixin (out0);
+  string tst_msg = "tst msg";
+  msg_verbose (tst_msg);
 }

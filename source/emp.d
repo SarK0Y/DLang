@@ -108,6 +108,12 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
             key += dt;
         } dt >>= 1;
     }
+    if (number_of_all_steps > msb) {number_of_all_steps -= msb; }
+    for (; number_of_all_steps > 0; number_of_all_steps-- ){
+        key += dt;
+        dt >>= 1;
+    }
+    
 }
 pragma (inline, true );
  void msg_verbose (string msg) {

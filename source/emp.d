@@ -125,12 +125,13 @@ string _Msg( string msg)
 template Msg(const char [] msg )
 {
    //string x = _Msg (msg);
-   const char [] out0 = "writefln(\"%s %s %s\"," ~"\""~ msg ~"\""~", __FILE_FULL_PATH__, __LINE__);";
+   const char [] out0 = "writefln(\"Msg: %s\nSource %s\nLine: %s\"," ~"\""~ msg ~"\""~", __FILE_FULL_PATH__, __LINE__);";
 }
 unittest
 {
     writeln ("\n\ntst mod emp.d\n");
-    mixin Msg!("tst mixin");
+    const char [] tst_mixin = "tst mixin";
+    mixin Msg!(tst_mixin);
    // write (out0);
   mixin (out0);
   string tst_msg = "tst msg";

@@ -87,9 +87,16 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         writefln("Dear User, file to decompress/decode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
+    if (!exists(orig))
+    {
+        writefln("Dear User, orig file doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
+        return;
+    }
     try {
         auto key = File(key_file, "rb");
         key.close ();
+        auto key1 = File(orig, "rb");
+        key1.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }
@@ -113,7 +120,7 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         key += dt;
         dt >>= 1;
     }
-    
+
 }
 pragma (inline, true );
  void msg_verbose (string msg) {

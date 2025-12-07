@@ -103,6 +103,9 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
     void [] key_arr = read (key_file);
     auto key = new zz (key_arr.ptr, key_arr.length);
     key_arr.destroy;
+    void[] _orig = read(orig);
+    auto __orig = new zz(_orig.ptr,_orig.length);
+    _orig.destroy;
     size_t msb = take_emp.dat.msb;
     size_t cnt = 0;
     auto dat = take_emp.dat;
@@ -120,7 +123,10 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         key += dt;
         dt >>= 1;
     }
-
+    if (__orig != key) {
+        mixin Msg! ("Failed to reproduce orig file");
+        mixin (out0);
+    }
 }
 pragma (inline, true );
  void msg_verbose (string msg) {

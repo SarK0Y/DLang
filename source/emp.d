@@ -20,6 +20,24 @@ ret_emp* save_for_unitst (ret_emp x) {
         sav = x;
     } return &sav;
 }
+extern (C) void EMP_default(
+    string file_target = "/tst/out.29.ՇࢥਫѼߑۙ.mp3",
+    string Key = "/tst/out.30.ନŗةȎЩʄ.mp3",
+    string extra_Key = "",
+    string file_out = "/tst/out.emp",
+    int word_order = 1,
+    int byte_order = 1
+) {
+    string file_target0 = file_target.dup;
+    EMP (
+        file_target0,
+        Key,
+        extra_Key,
+        file_out,
+        word_order,
+        byte_order
+    ); return;
+}
 extern (C) void EMP (
     ref string file_target,
     ref string Key,
@@ -51,17 +69,15 @@ extern (C) void EMP (
         key_zz._import (cast (void*)key_arr, key.size);
         auto map = __emp (&target_zz, &key_zz);
         auto dat = map.dat._export ();
-        save_for_unitst (map);
         if (dat == null) {
             writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);
             return;
         }
+        save_for_unitst(map);
     }
     catch (FileException e ) {
         writeln ("Failed to prepare files.", e.msg);
     }
-
-
 }
 ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
@@ -155,4 +171,5 @@ unittest
   mixin (out0);
   string tst_msg = "tst msg";
   msg_verbose (tst_msg);
+  EMP_default;
 }

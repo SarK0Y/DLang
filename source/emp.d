@@ -67,6 +67,7 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check read files\n"); }
         zz target_zz, key_zz;
         target_zz._import (cast(void*)target_arr, target.size);
+        debug { import core.stdc.stdio : printf; printf("check target_zz\n"); }
         key_zz._import (cast (void*)key_arr, key.size);
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);

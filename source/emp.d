@@ -64,9 +64,11 @@ extern (C) void EMP (
         fout = File (file_out, "w+");
         void [] target_arr =read(file_target);
         void [] key_arr = read (Key);
+        debug { import core.stdc.stdio : printf; printf("check read files\n"); }
         zz target_zz, key_zz;
         target_zz._import (cast(void*)target_arr, target.size);
         key_zz._import (cast (void*)key_arr, key.size);
+        debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);
         auto dat = map.dat._export ();
         if (dat == null) {

@@ -108,9 +108,10 @@ class GmpInt
     size_t msb () {
         return __gmpz_sizeinbase (&_z, 2);
     }
-   void _import (void* buf, ulong buf_size)
+   void _import (void* buf, size_t buf_size)
     {
-        writeln ("buf size for _import: ", buf_size);
+        printf ("entry _import\n");
+        printf ("buf size for _import: %lld\n", buf_size);
         __gmpz_import(
             &_z,
             buf_size,

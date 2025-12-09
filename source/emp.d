@@ -70,12 +70,13 @@ extern (C) void EMP (
         void [] key_arr = read (Key);
         printf ("len: %lld, size: %lld", target_arr.length, target.size);
         debug { import core.stdc.stdio : printf; printf("check read files\n"); }
-        zz target_zz = new zz (0); zz* key_zz = zz.mk;
+        zz target_zz = new zz (0), key_zz = zz.mk0;
         target_zz._import (target_arr.ptr, target_arr.length);
         debug { import core.stdc.stdio : printf; printf("check target_zz\n"); }
         key_zz._import (key_arr.ptr, key_arr.length);
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
-        auto map = __emp (&target_zz, key_zz);
+        auto map = __emp (&target_zz, &key_zz);
+        debug { import core.stdc.stdio : printf; printf("check map\n"); }
         auto dat = map.dat._export ();
         if (dat == null) {
             writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);

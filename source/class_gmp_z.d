@@ -105,6 +105,11 @@ class GmpInt
         auto ret = new zz (0);
         return cast (zz*)ret;
     }
+    static zz mk0()
+    {
+        auto ret = new zz(0);
+        return ret;
+    }
     size_t msb () {
         return __gmpz_sizeinbase (&_z, 2);
     }

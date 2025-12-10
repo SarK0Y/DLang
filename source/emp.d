@@ -93,7 +93,12 @@ ret_emp __emp (zz* target, zz* key) {
     zz* map = zz.mk();
     printf ("check map in __emp\n");
     size_t cnt = 0;
-    while (*key != target) {
+    if (*key == *target) {
+        printf ("key == target, abort __emp(..)");
+        goto end;
+    }
+    printf ("start while-loop\n");
+    while (!(*key == target)) {
         if (*key > target) {
             *key -= dt;
             map.setbit (cnt);
@@ -106,6 +111,7 @@ ret_emp __emp (zz* target, zz* key) {
         cnt++;
     }
     //GC.free (dt); // for void*
+end:
     dt.destroy;
     return ret_emp (map, cnt);
 }

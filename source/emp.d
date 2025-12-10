@@ -91,12 +91,15 @@ extern (C) void EMP (
 ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
     zz* map = zz.mk();
+    printf ("check map in __emp\n");
     size_t cnt = 0;
     while (*key != target) {
         if (*key > target) {
             *key -= dt;
             map.setbit (cnt);
+            printf ("cnt: %lld\n", cnt);
         } else {
+            printf ("no cnt\n");
             *key += dt;
         }
         dt >>= 1;

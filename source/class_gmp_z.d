@@ -71,7 +71,7 @@ extern (C) {
 }
 pragma(lib, "gmp0");
 // D wrapper class
-class GmpInt
+extern (C) class GmpInt
 {
     private Z _z;
     public: alias zz = GmpInt;
@@ -102,8 +102,12 @@ class GmpInt
         );
     }
     static zz* mk () {
-        auto ret = new zz (0);
-        return cast (zz*)ret;
+        auto __zz = new zz(0);
+        auto size_zz = __traits (classInstanceSize, GmpInt);
+        auto alloc_zz = cast (zz) malloc (size_zz);
+        alloc_zz = __zz.dup;
+        alloc_zz.prnt;
+        return &alloc_zz;
     }
     static zz mk0()
     {
@@ -171,11 +175,13 @@ class GmpInt
     }
     void setbit(ulong x)
     {
-        return __gmpz_setbit(&_z, x);
+
+       __setbit (&_z, x);
     }
     void clrbit(ulong x)
     {
-        return __gmpz_clrbit(&_z, x);
+        __gmpz_clrbit(&_z, x);
+        return;
     }
     void opAssign(string op)( string str) if (op == "=")
     {
@@ -346,6 +352,10 @@ void simply_print_time (string s) {
         dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second); // dt.nsecs);
 
     writefln("%s: %s", s, customTime);
+}
+extern (C) void __setbit (Z* __z, ulong x) {
+    __gmpz_setbit(__z, x);
+    return;
 }
 unittest
 {

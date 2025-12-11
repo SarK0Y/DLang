@@ -90,23 +90,35 @@ extern (C) void EMP (
 }
 ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
-    zz* map = zz.mk();
+    zz* map = zz.mk;
     printf ("check map in __emp\n");
-    size_t cnt = 0;
+    ulong cnt = 0;
     if (*key == *target) {
         printf ("key == target, abort __emp(..)");
         goto end;
     }
-    printf ("start while-loop\n");
-    while (!(*key == target)) {
+    if (*key != target) {
+        printf ("key != target\n");
+    }
+    assert(*key != target.ptr);
+    printf("start while-loop\n");
+    while (0==0) {
+        printf ("tst while loop");
+        break;
+    }
+    for (;;) {
+        printf ("in while-loop");
         if (*key > target) {
             *key -= dt;
-            map.setbit (cnt);
+            map.prnt;
+            break;
+            __setbit (map.ptr, cnt);
             printf ("cnt: %lld\n", cnt);
         } else {
             printf ("no cnt\n");
             *key += dt;
         }
+        if (dt == 0 || *key == target.ptr ) { break; }
         dt >>= 1;
         cnt++;
     }

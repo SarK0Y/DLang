@@ -8,7 +8,7 @@ license "MAE (https://github.com/SarK0Y/Mademoiselle_Entropia/blob/main/LICENSE)
 targetType "dynamicLibrary"
 toolchainRequirements gdc=">=10.0.0" dmd=">=2.111.0" ldc=">=1.0.0"
 lflags "-L./source"
-dflags "-c"
+dflags ""
 #dependency "zmath" version="~>0.9.1"
 #dependency "gmp-d" version="~>0.2.26"
 libs "gmp"

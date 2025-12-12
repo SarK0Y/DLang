@@ -106,8 +106,9 @@ extern (C) class GmpInt
         auto size_zz = __traits (classInstanceSize, GmpInt);
         auto alloc_zz = cast (zz) malloc (size_zz);
         alloc_zz = __zz.dup;
+        zz* ret = &alloc_zz;
         alloc_zz.prnt;
-        return &alloc_zz;
+        return ret;
     }
     static zz mk0()
     {

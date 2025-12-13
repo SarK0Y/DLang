@@ -21,8 +21,8 @@ ret_emp* save_for_unitst (ret_emp x) {
     } return &sav;
 }
 extern (C) void EMP_default(
-    string file_target = "/tst/out.29.ՇࢥਫѼߑۙ.mp3",
-    string Key = "/tst/out.30.ନŗةȎЩʄ.mp3",
+    string file_target = "/tst/algo 30.png",
+    string Key = "/tst/algo19.png",
     string extra_Key = "",
     string file_out = "/tst/out.emp",
     int word_order = 1,
@@ -106,22 +106,22 @@ ret_emp __emp (zz* target, zz* key) {
         printf ("tst while loop");
         break;
     }
+    simply_print_time ("start tst for __emp");
     for (;;) {
-        printf ("in while-loop");
         if (*key > target) {
             *key -= dt;
-            map.prnt;
-            break;
-            __setbit (map.ptr, cnt);
-            printf ("cnt: %lld\n", cnt);
+            //__setbit (map.ptr, cnt);
+            map.setbit (cnt);
+          //  printf ("cnt: %lld\n", cnt);
         } else {
-            printf ("no cnt\n");
+       //     printf ("no cnt\n");
             *key += dt;
         }
         if (dt == 0 || *key == target.ptr ) { break; }
         dt >>= 1;
         cnt++;
     }
+    simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
     dt.destroy;

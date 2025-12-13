@@ -36,6 +36,7 @@ extern (C) {
     int __gmpz_realloc2 (Z* rop, uint new_sise);
     size_t __gmpz_sizeinbase (Z* op, int base);
     uint __gmpz_size (Z* rop );
+    uint __gmpn_add_n(ulong* rop, ulong* op1, ulong* op2, ulong n);
     char* __gmpz_get_str(char* buf, int base, Z* integer);
     void __gmp_init ();
     void __gmp_printf (const (char* ) format, ...);
@@ -74,8 +75,10 @@ pragma(lib, "gmp0");
 extern (C) class GmpInt
 {
     private Z _z;
-    public: alias zz = GmpInt;
-    
+    public {
+         alias zz = GmpInt;
+         bool max_speed_ops = false;
+    } 
     this()
     {
         __gmpz_init(&_z);
@@ -280,9 +283,7 @@ extern (C) class GmpInt
     }
     GmpInt opBinary(string op: "+")(GmpInt rhs)
     {
-        GmpInt result = new GmpInt();
-        __gmpz_add(result.ptr, this.ptr, rhs.ptr);
-        return result;
+        return __add (this.ptr, rhs.ptr);
     }
     GmpInt opBinary(string op : "-")(GmpInt rhs)
     {
@@ -357,6 +358,11 @@ void simply_print_time (string s) {
 extern (C) void __setbit (Z* __z, ulong x) {
     __gmpz_setbit(__z, x);
     return;
+}
+zz slow_add (Z* rop, Z*op1) {
+    GmpInt result = new GmpInt();
+    __gmpz_add(result.ptr, rop, op1);
+    return result;
 }
 unittest
 {

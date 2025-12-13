@@ -71,12 +71,24 @@ extern (C) {
     //uint _mpn_rshift_(void* rp, const void* sp, size_t n, uint count);
 }
 pragma(lib, "gmp0");
-// D wrapper class
+const char [] Init_zz = "
+    if (_z._mp_alloc > max_n) {
+        max_n = _z._mp_alloc;
+    }
+    __init_funx;
+";
+const char[] Init_zz_for_mk = "
+    if (_z._mp_alloc > max_n) {
+        max_n = ret._z._mp_alloc;
+    }
+    __init_funx;
+";
 extern (C) class GmpInt
 {
     private {
         Z _z;
         static bool max_speed_ops = false;
+        static ulong max_n =0;
         static void function(Z*, Z*, ulong) __add;
         static void delegate(Z*, Z*, ulong) __sub;
     }
@@ -93,18 +105,18 @@ extern (C) class GmpInt
     this()
     {
         __gmpz_init(&_z);
-        __init_funx;
+        mixin (Init_zz);
     }
     this(return scope int x)
     {
         __gmpz_set_ui(&_z, x);
-        __init_funx;
+        mixin(Init_zz);
     }
     this(return scope GmpInt x)
     {
         __gmpz_init(&_z);
         __gmpz_set(&_z, x.ptr()  );
-        __init_funx;
+        mixin(Init_zz);
     }
     this (void* buf, size_t buf_size) {
         __gmpz_init(&_z);
@@ -117,7 +129,7 @@ extern (C) class GmpInt
             0,
             buf
         );
-        __init_funx;
+        mixin(Init_zz);
     }
     static zz* mk () {
         auto __zz = new zz(0);
@@ -125,13 +137,11 @@ extern (C) class GmpInt
         auto alloc_zz = cast (zz) malloc (size_zz);
         alloc_zz = __zz.dup;
         zz* ret = &alloc_zz;
-        __init_funx;
         return ret;
     }
     static zz mk0()
     {
         auto ret = new zz(0);
-        __init_funx ();
         return ret;
     }
     size_t msb () {
@@ -150,6 +160,7 @@ extern (C) class GmpInt
             0,
             buf
         );
+        mixin(Init_zz);
     }
     void* _export()
     {
@@ -250,7 +261,7 @@ extern (C) class GmpInt
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op: "+")(zz y) {
-        __gmpz_add (&_z, &_z, y.ptr);
+        __add (&_z, y.ptr, max_n);
     }
     void opOpAssign(string op : "-")(zz y)
     {

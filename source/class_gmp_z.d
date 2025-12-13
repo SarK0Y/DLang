@@ -283,7 +283,9 @@ extern (C) class GmpInt
     }
     GmpInt opBinary(string op: "+")(GmpInt rhs)
     {
-        return __add (this.ptr, rhs.ptr);
+        GmpInt result = new GmpInt();
+        __gmpz_add(result.ptr, this.ptr, rhs.ptr);
+        return result;
     }
     GmpInt opBinary(string op : "-")(GmpInt rhs)
     {
@@ -359,10 +361,12 @@ extern (C) void __setbit (Z* __z, ulong x) {
     __gmpz_setbit(__z, x);
     return;
 }
-zz slow_add (Z* rop, Z*op1) {
-    GmpInt result = new GmpInt();
-    __gmpz_add(result.ptr, rop, op1);
-    return result;
+void slow_add (Z* rop, Z*op1, ulong n = 0) {
+    __gmpz_add(rop, rop, op1);
+}
+void fast_add(Z* rop, Z* op1, ulong n = 0) 
+{
+    __gmpn_add_n(cast (ulong*) rop._mp_d, cast(ulong*) rop._mp_d, cast(ulong*) op1._mp_d, n);
 }
 unittest
 {

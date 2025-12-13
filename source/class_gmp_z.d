@@ -74,23 +74,37 @@ pragma(lib, "gmp0");
 // D wrapper class
 extern (C) class GmpInt
 {
-    private Z _z;
+    private {
+        Z _z;
+        static bool max_speed_ops = false;
+        static void function(Z*, Z*, ulong) __add;
+        static void delegate(Z*, Z*, ulong) __sub;
+    }
     public {
          alias zz = GmpInt;
-         bool max_speed_ops = false;
     } 
+    static void __init_funx () {
+        if (max_speed_ops) {
+            __add = &fast_add;
+        } else {
+            __add = &slow_add;
+        }
+    }
     this()
     {
         __gmpz_init(&_z);
+        __init_funx;
     }
     this(return scope int x)
     {
         __gmpz_set_ui(&_z, x);
+        __init_funx;
     }
     this(return scope GmpInt x)
     {
         __gmpz_init(&_z);
         __gmpz_set(&_z, x.ptr()  );
+        __init_funx;
     }
     this (void* buf, size_t buf_size) {
         __gmpz_init(&_z);
@@ -103,6 +117,7 @@ extern (C) class GmpInt
             0,
             buf
         );
+        __init_funx;
     }
     static zz* mk () {
         auto __zz = new zz(0);
@@ -110,12 +125,13 @@ extern (C) class GmpInt
         auto alloc_zz = cast (zz) malloc (size_zz);
         alloc_zz = __zz.dup;
         zz* ret = &alloc_zz;
-        alloc_zz.prnt;
+        __init_funx;
         return ret;
     }
     static zz mk0()
     {
         auto ret = new zz(0);
+        __init_funx ();
         return ret;
     }
     size_t msb () {
@@ -361,10 +377,10 @@ extern (C) void __setbit (Z* __z, ulong x) {
     __gmpz_setbit(__z, x);
     return;
 }
-void slow_add (Z* rop, Z*op1, ulong n = 0) {
+extern (C) void slow_add (Z* rop, Z*op1, ulong n) {
     __gmpz_add(rop, rop, op1);
 }
-void fast_add(Z* rop, Z* op1, ulong n = 0) 
+extern (C) void fast_add(Z* rop, Z* op1, ulong n) 
 {
     __gmpn_add_n(cast (ulong*) rop._mp_d, cast(ulong*) rop._mp_d, cast(ulong*) op1._mp_d, n);
 }

@@ -37,8 +37,8 @@ extern (C) {
     size_t __gmpz_sizeinbase (Z* op, int base);
     uint __gmpz_size (Z* rop );
     uint __gmpn_add_n(ulong* rop, ulong* op1, ulong* op2, ulong n);
+    uint __gmpn_sub_n(ulong* rop, ulong* op1, ulong* op2, ulong n);
     char* __gmpz_get_str(char* buf, int base, Z* integer);
-    void __gmp_init ();
     void __gmp_printf (const (char* ) format, ...);
     void __gmpz_import(
         Z* rop,
@@ -58,7 +58,7 @@ extern (C) {
         size_t nails, // skip n most bits of word
         Z* op
     );
-    immutable (char*) __gmp_version;
+    immutable (char*) gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
         void * rp,
@@ -90,7 +90,7 @@ extern (C) class GmpInt
         static bool max_speed_ops = false;
         static ulong max_n =0;
         static void function(Z*, Z*, ulong) __add;
-        static void delegate(Z*, Z*, ulong) __sub;
+        static void function(Z*, Z*, ulong) __sub;
     }
     public {
          alias zz = GmpInt;
@@ -98,8 +98,10 @@ extern (C) class GmpInt
     static void __init_funx () {
         if (max_speed_ops) {
             __add = &fast_add;
+            __sub = &fast_sub;
         } else {
             __add = &slow_add;
+            __sub = &slow_sub;
         }
     }
     this()
@@ -195,8 +197,7 @@ extern (C) class GmpInt
         return &_z;
     }
     void GMP_ver () {
-        //__gmp_init ();
-        __gmp_printf ("GMP ver: %s", __gmp_version );
+        __gmp_printf ("GMP ver: %s", gmp_version );
     }
     GmpInt dup () {
         return new GmpInt ( this );
@@ -265,7 +266,7 @@ extern (C) class GmpInt
     }
     void opOpAssign(string op : "-")(zz y)
     {
-        __gmpz_sub(&_z, &_z, y.ptr);
+        __sub(&_z, y.ptr, max_n);
     }
     void opOpAssign(string op)(uint shift) if (op == "<<")
     {
@@ -395,6 +396,16 @@ extern (C) void fast_add(Z* rop, Z* op1, ulong n)
 {
     __gmpn_add_n(cast (ulong*) rop._mp_d, cast(ulong*) rop._mp_d, cast(ulong*) op1._mp_d, n);
 }
+extern (C) void slow_sub(Z* rop, Z* op1, ulong n)
+{
+    __gmpz_sub(rop, rop, op1);
+}
+
+extern (C) void fast_sub(Z* rop, Z* op1, ulong n)
+{
+    __gmpn_sub_n(cast(ulong*) rop._mp_d, cast(ulong*) rop._mp_d, cast(ulong*) op1._mp_d, n);
+}
+
 unittest
 {
     

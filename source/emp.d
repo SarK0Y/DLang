@@ -4,9 +4,11 @@ import std.algorithm;
 import std.file;
 import std.exception;
 import gmp_z;
+import helpful;
 import std.stdio;
 import std.string;
 import std.uni;
+import std.conv;
 extern (C) struct ret_emp {
     zz* dat;
     size_t size;
@@ -69,7 +71,10 @@ extern (C) void EMP (
         fout = File (file_out, "w+");
         void [] target_arr =read(file_target);
         void [] key_arr = read (Key);
-        printf ("len: %lld, size: %lld", target_arr.length, target.size);
+        ushort w =15;
+        auto pad = padding(w, cast(char * ) "@".ptr);
+        printf ("check pad %s\n", pad);
+        printf ("len: %lld, size: |%s%lld|", target_arr.length, pad, target.size);
         debug { import core.stdc.stdio : printf; printf("check read files\n"); }
         zz target_zz = new zz (0), key_zz = zz.mk0;
         size_t max_size_for_num = max (target_arr.length, key_arr.length) + 1;

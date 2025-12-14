@@ -58,7 +58,7 @@ extern (C) {
         size_t nails, // skip n most bits of word
         Z* op
     );
-    immutable (char*) gmp_version;
+    const(char)* __gmp_version;
     //alias  void _mpn_rshift_(void * rp, const void * sp, size_t n, uint count) = 
     void __gmpn_rshift(
         void * rp,
@@ -197,7 +197,7 @@ extern (C) class GmpInt
         return &_z;
     }
     void GMP_ver () {
-        __gmp_printf ("GMP ver: %s", gmp_version );
+        printf ("GMP ver: %s", __gmp_version );
     }
     GmpInt dup () {
         return new GmpInt ( this );

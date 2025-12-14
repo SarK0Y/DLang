@@ -1,5 +1,6 @@
 import core.stdc.stdio;
 import core.memory;
+import std.algorithm;
 import std.file;
 import std.exception;
 import gmp_z;
@@ -71,9 +72,10 @@ extern (C) void EMP (
         printf ("len: %lld, size: %lld", target_arr.length, target.size);
         debug { import core.stdc.stdio : printf; printf("check read files\n"); }
         zz target_zz = new zz (0), key_zz = zz.mk0;
-        target_zz._import (target_arr.ptr, target_arr.length);
+        size_t max_size_for_num = max (target_arr.length, key_arr.length) + 1;
+        target_zz._import (target_arr.ptr, max_size_for_num);
         debug { import core.stdc.stdio : printf; printf("check target_zz\n"); }
-        key_zz._import (key_arr.ptr, key_arr.length);
+        key_zz._import (key_arr.ptr, max_size_for_num);
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);
         debug { import core.stdc.stdio : printf; printf("check map\n"); }

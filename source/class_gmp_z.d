@@ -87,13 +87,13 @@ extern (C) class GmpInt
 {
     private {
         Z _z;
-        static bool max_speed_ops = false;
         static ulong max_n =0;
         static void function(Z*, Z*, ulong) __add;
         static void function(Z*, Z*, ulong) __sub;
     }
     public {
-         alias zz = GmpInt;
+        alias zz = GmpInt;
+        static bool max_speed_ops = false;
     } 
     static void __init_funx () {
         if (max_speed_ops) {

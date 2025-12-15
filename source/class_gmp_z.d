@@ -39,7 +39,7 @@ extern (C) {
     uint __gmpn_add_n(ulong* rop, ulong* op1, ulong* op2, ulong n);
     uint __gmpn_sub_n(ulong* rop, ulong* op1, ulong* op2, ulong n);
     char* __gmpz_get_str(char* buf, int base, Z* integer);
-    void __gmp_printf (const (char* ) format, ...);
+    int __gmp_printf (const (char* ) format, ...);
     void __gmpz_import(
         Z* rop,
         size_t count, //how many words to read
@@ -162,6 +162,7 @@ extern (C) class GmpInt
             0,
             buf
         );
+        printf ("alloc for _import: %lld _size: %lld\n", _z._mp_alloc, __gmpz_size (&_z));
         mixin(Init_zz);
     }
     void* _export()

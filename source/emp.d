@@ -79,6 +79,7 @@ extern (C) void EMP (
         zz target_zz = new zz (0), key_zz = zz.mk0;
         target_zz.max_speed_ops = true;
         key_zz.max_speed_ops = true;
+        zz._0_max_n;
         size_t max_size_for_num = max (target_arr.length, key_arr.length) + 1;
         target_zz._import (target_arr.ptr, max_size_for_num);
         debug { import core.stdc.stdio : printf; printf("check target_zz\n"); }

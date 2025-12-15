@@ -95,6 +95,9 @@ extern (C) class GmpInt
         alias zz = GmpInt;
         static bool max_speed_ops = false;
     } 
+    static void _0_max_n () {
+        max_n = 0;
+    }
     static void __init_funx () {
         if (max_speed_ops) {
             __add = &fast_add;
@@ -162,8 +165,10 @@ extern (C) class GmpInt
             0,
             buf
         );
-        printf ("alloc for _import: %lld _size: %lld\n", _z._mp_alloc, __gmpz_size (&_z));
-        mixin(Init_zz);
+        if (buf_size > max_n) {
+            max_n = buf_size / buf_size.sizeof;
+        }
+        printf("alloc for _import: %lld _size: %lld max_n %lld\n", _z._mp_alloc, __gmpz_size(&_z), max_n);
     }
     void* _export()
     {

@@ -216,7 +216,7 @@ unittest
     __0 >>= 3;
     _0 >>= 3;
     __0.prnt;
-    assert(_0 == __0);
+    assert(_0 == &__0);
     _0.prnt;
    // write (out0);
   mixin (out0);

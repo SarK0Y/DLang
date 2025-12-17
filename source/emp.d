@@ -209,7 +209,14 @@ unittest
     mixin Msg!(tst_mixin);
     auto _0 = new zz (3);
     _0.name = "_0";
+    auto __0 = _0.dup;
+    assert(__0 == 3);
+    __0.name = "__0\n";
+    __0.prnt;
+    __0 >>= 3;
     _0 >>= 3;
+    __0.prnt;
+    assert(_0 == __0);
     _0.prnt;
    // write (out0);
   mixin (out0);

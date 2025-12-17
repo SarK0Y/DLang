@@ -299,8 +299,11 @@ extern (C) class GmpInt
        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
        writeln ("End lshift");
     }
+    uint len () {
+        return __gmpz_size (&_z);
+    }
     void prnt () {
-        __gmp_printf ("GmpInt: %Zd name: %s", this.ptr, name.ptr );
+        __gmp_printf ("GmpInt: %Zd\n name: %s\nlen: %d\n", this.ptr, name.ptr, this.len );
     }
     zz opBinary(string op)(uint shift) if (op == "<<")
     {

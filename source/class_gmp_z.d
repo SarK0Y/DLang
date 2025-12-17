@@ -94,6 +94,7 @@ extern (C) class GmpInt
     public {
         alias zz = GmpInt;
         static bool max_speed_ops = false;
+        string name;
     } 
     static void _0_max_n () {
         max_n = 0;
@@ -299,7 +300,7 @@ extern (C) class GmpInt
        writeln ("End lshift");
     }
     void prnt () {
-        __gmp_printf ("GmpInt: %Zd %p", this.ptr, this.ptr );
+        __gmp_printf ("GmpInt: %Zd name: %s", this.ptr, name.ptr );
     }
     zz opBinary(string op)(uint shift) if (op == "<<")
     {

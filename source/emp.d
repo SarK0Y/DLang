@@ -207,6 +207,10 @@ unittest
     writeln ("\n\ntst mod emp.d\n");
     const char [] tst_mixin = "tst mixin";
     mixin Msg!(tst_mixin);
+    auto _0 = new zz (3);
+    _0.name = "_0";
+    _0 >>= 3;
+    _0.prnt;
    // write (out0);
   mixin (out0);
   string tst_msg = "tst msg";

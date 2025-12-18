@@ -222,28 +222,28 @@ extern (C) class GmpInt
         __gmpz_clrbit(&_z, x);
         return;
     }
-    void opAssign(string op)( string str) if (op == "=")
+    void opAssign( string str)
     {
         writeln ("void opAssign(string op)( string str) if (op ==  = )");
         __gmpz_set_str( this.ptr, str.ptr, 10);
         return;
     }
-    void opAssign(string op)(GmpInt rhs) if (op == "=")
+    void opAssign(string op)(zz rhs)
     {
         writeln("void opAssign(string op)(GmpInt rhs) if (op == \" = \")");
         __gmpz_set(&_z, &rhs );
         return;
     }
-    void opAssign(string op)(int rhs) if (op == "=")
+    void opAssign(uint rhs)
     {   
-        writeln ("void opAssign(string op)(int rhs) if (op == \" = \")");
-        //__gmpz_init (&_z);
+        writeln ("void opAssign(uint rhs) if (op == \" = \")");
+        __gmpz_init (&_z);
         __gmpz_set_ui(&_z, rhs);
     }
-    GmpInt opAssign(string op)(int rhs) if (op == "=")
+    GmpInt opAssign(int rhs)
     {
         writeln("void opAssign(string op)(int rhs) if (op == \" = \")");
-        //__gmpz_init (&_z);
+        __gmpz_init (&_z);
         __gmpz_set_ui(&_z, rhs);
         return this;
     }
@@ -252,7 +252,7 @@ extern (C) class GmpInt
         
         return new GmpInt ( rhs );
     }
-    void opAssign(string op)(uint rhs) if (op == "=")
+    void opAssign(string op)(uint rhs)
     {
         writeln("void opAssign(string op)(uint rhs) if (op == \" = \")");
         __gmpz_set_ui(&_z, rhs);

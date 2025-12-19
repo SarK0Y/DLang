@@ -24,8 +24,8 @@ ret_emp* save_for_unitst (ret_emp x) {
     } return &sav;
 }
 extern (C) void EMP_default(
-    string file_target = "/tst/short1.txt", //"/tst/algo 30.png",
-    string Key = "/tst/short2.txt", //"/tst/algo19.png",
+    string file_target = "/tst/algo 30.png",
+    string Key = "/tst/algo19.png",
     string extra_Key = "",
     string file_out = "/tst/out.emp",
     int word_order = 1,
@@ -127,7 +127,7 @@ ret_emp __emp (zz* target, zz* key) {
        //     printf ("no cnt\n");
             *key += dt;
         }
-        if (dt == 0 || *key == target.ptr ) { break; }
+        if (dt.msb == 0 || *key == target.ptr ) { break; }
         dt >>= 1;
         cnt++;
     }

@@ -151,7 +151,11 @@ extern (C) class GmpInt
         return ret;
     }
     size_t msb () {
-        return __gmpz_sizeinbase (&_z, 2);
+        ulong msb =  __gmpz_sizeinbase (&_z, 2);
+        ulong len = this.len * 64;
+        if (msb > len)
+            return 0;
+        return msb;
     }
    void _import (void* buf, size_t buf_size)
     {

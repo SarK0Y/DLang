@@ -303,7 +303,7 @@ extern (C) class GmpInt
         return __gmpz_size (&_z);
     }
     void prnt () {
-        __gmp_printf ("GmpInt: %Zd\n name: %s\nlen: %d\n", this.ptr, name.ptr, this.len );
+        __gmp_printf ("Val: %Zd\n name: %s\nlen: %d\nmsb: %lld", this.ptr, name.ptr, this.len, this.msb );
     }
     zz opBinary(string op)(uint shift) if (op == "<<")
     {

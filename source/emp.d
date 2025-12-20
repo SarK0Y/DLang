@@ -87,7 +87,13 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);
         debug { import core.stdc.stdio : printf; printf("check map\n"); }
-        auto dat = map.dat._export ();
+        void* dat = map.dat._export ();
+        debug
+        {
+            import core.stdc.stdio : printf;
+
+            printf("check export\n");
+        }
         if (dat == null) {
             writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);
             return;

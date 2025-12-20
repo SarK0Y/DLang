@@ -177,7 +177,10 @@ extern (C) class GmpInt
     }
     void* _export()
     {
-        auto buf_size = __gmpz_size( & _z);
+        printf("entry _export\n");
+        debug {printf ("entry _export\n");}
+        auto buf_size = __gmpz_size( & _z) * 64;
+        debug {printf ("buf size for export: %lld ../64: %lld\n", buf_size, buf_size/64);}
         auto buf = malloc (
             buf_size
         );

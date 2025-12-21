@@ -87,7 +87,8 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);
         debug { import core.stdc.stdio : printf; printf("check map pointer %p\n", map.dat); }
-        void* dat = map.dat._export ();
+        map.dat.prnt;
+        void* dat = null;//map.dat._export ();
         debug
         {
             import core.stdc.stdio : printf;
@@ -122,6 +123,7 @@ ret_emp __emp (zz* target, zz* key) {
         printf ("tst while loop");
         break;
     }
+    map.prnt;
     simply_print_time ("start tst for __emp");
     for (;;) {
         if (*key > target) {
@@ -140,6 +142,8 @@ ret_emp __emp (zz* target, zz* key) {
     simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
+    (*map).name = "name";
+    (*map).prnt;
     dt.destroy;
     return ret_emp (map, cnt);
 }

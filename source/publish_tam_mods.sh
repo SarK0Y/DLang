@@ -12,7 +12,7 @@ set count 1
 set indx 0;
 set force 0;
 for arg in $argv
-    if test "$argv[$count]" = "-f"
+    if test "$arg" = "-f"
         set force 1
         break
     end

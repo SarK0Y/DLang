@@ -127,7 +127,9 @@ extern (C) ret_emp __emp (zz* target, zz* key) {
     *map = 0;
     map.prnt;
     simply_print_time ("start tst for __emp");
+    map.prnt;
     for (;;) {
+        map.prnt;
         if (*key > target) {
             *key -= dt;
             printf("0cnt: %lld\n", cnt);
@@ -138,7 +140,7 @@ extern (C) ret_emp __emp (zz* target, zz* key) {
             *key += dt;
         }
         if (dt.msb == 0 || *key == target.ptr ) { break; }
-        printf ("dt.msb == %lld\n", dt.msb);
+        printf ("dt.msb == %lld, map.msb %lld, %s\n", dt.msb, map.msb, map.name.ptr);
         dt >>= 1;
         cnt++;
     }
@@ -148,6 +150,7 @@ end:
     assert(*key < target.ptr);
     prnt ("check assert\n");
     map.name = "name";
+    prnt("check assert\n");
     //(*map).prnt;
     dt.destroy;
     return ret_emp (map, cnt);

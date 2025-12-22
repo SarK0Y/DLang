@@ -5,8 +5,9 @@ cd ~/Dlang/TAM_mods/github/
 rm -rf ~/Dlang/TAM_mods/github/source/*
 echo (pwd)
 cp -f ../source/* ./source
+cp -f ../tst/* ./tst
 cp -f ../dub.sdl ./
-git add dub.sdl source
+git add dub.sdl source tst
 set m  "-m"
 set count 1
 set indx 0;

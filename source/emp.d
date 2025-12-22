@@ -123,6 +123,7 @@ extern (C) ret_emp __emp (zz* target, zz* key) {
         printf ("tst while loop");
         break;
     }
+    map.name = "name1";
     *map = 0;
     map.prnt;
     simply_print_time ("start tst for __emp");

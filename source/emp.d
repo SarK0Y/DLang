@@ -105,7 +105,7 @@ extern (C) void EMP (
         writeln ("Failed to prepare files.", e.msg);
     }
 }
-ret_emp __emp (zz* target, zz* key) {
+extern (C) ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
     zz* map = zz.mk;
     printf ("check map in __emp pointer: %p\n", map);
@@ -123,27 +123,31 @@ ret_emp __emp (zz* target, zz* key) {
         printf ("tst while loop");
         break;
     }
+    *map = 0;
     map.prnt;
     simply_print_time ("start tst for __emp");
     for (;;) {
         if (*key > target) {
             *key -= dt;
-            //__setbit (map.ptr, cnt);
+            printf("0cnt: %lld\n", cnt);
             map.setbit (cnt);
-          //  printf ("cnt: %lld\n", cnt);
+            printf ("cnt: %lld\n", cnt);
         } else {
-       //     printf ("no cnt\n");
+            printf ("no cnt\n");
             *key += dt;
         }
         if (dt.msb == 0 || *key == target.ptr ) { break; }
+        printf ("dt.msb == %lld\n", dt.msb);
         dt >>= 1;
         cnt++;
     }
-    simply_print_time("end tst for __emp");
+    //simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
-    (*map).name = "name";
-    (*map).prnt;
+    assert(*key < target.ptr);
+    prnt ("check assert\n");
+    map.name = "name";
+    //(*map).prnt;
     dt.destroy;
     return ret_emp (map, cnt);
 }

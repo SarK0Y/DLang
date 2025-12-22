@@ -396,7 +396,7 @@ mixin template gmp_zz () {
 }
 import std.datetime;
 import std.format;
-void simply_print_time (string s) {
+extern (C) void simply_print_time (string s) {
     auto currentTime = Clock.currTime();
     auto dt = cast(DateTime) currentTime;
 

@@ -39,4 +39,5 @@ if test $force = 1
 else
     git push -u
 end
+echo "force mode: $force"
 cd $prev_dir

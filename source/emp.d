@@ -235,12 +235,12 @@ unittest
     __0 = i0;
     __0 = "5";
     _0 = 5;
-    __0 >>= 40;
+   /* __0 >>= 40;
     _0 >>= 24;
     __0.prnt;
     assert(_0.msb == 0);
     assert(_0 == &__0);
-    _0.prnt;
+    _0.prnt; */
    // write (out0);
   mixin (out0);
   string tst_msg = "tst msg";

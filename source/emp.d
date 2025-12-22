@@ -107,7 +107,7 @@ extern (C) void EMP (
 }
 extern (C) ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
-    zz* map = zz.mk;
+    zz* map = zz._mk;
     printf ("check map in __emp pointer: %p\n", map);
     ulong cnt = 0;
     if (*key == *target) {
@@ -124,12 +124,10 @@ extern (C) ret_emp __emp (zz* target, zz* key) {
         break;
     }
     map.name = "name1";
-   // *map = 0;
+    map.set (0);
     map.prnt;
     simply_print_time ("start tst for __emp");
-    map.prnt;
     for (;;) {
-        map.prnt;
         if (*key > target) {
             *key -= dt;
             printf("0cnt: %lld\n", cnt);

@@ -113,10 +113,11 @@ extern (C) class GmpInt
         __gmpz_init(&_z);
         mixin (Init_zz);
     }
-    this(return scope int x)
+    this( int x)
     {
         __gmpz_set_ui(&_z, x);
         mixin(Init_zz);
+        this.name = "";
     }
     this(return scope GmpInt x)
     {
@@ -217,13 +218,26 @@ extern (C) class GmpInt
     }
     Z* ptr()
     {
-        return &_z;
+        Z* ret = &_z;
+        return ret;
     }
     void GMP_ver () {
         printf ("GMP ver: %s", __gmp_version );
     }
     GmpInt dup () {
         return new GmpInt ( this );
+    }
+    void set (zz* rhs) {
+        __gmpz_set (this.ptr, rhs.ptr);
+    }
+    void set(int rhs)
+    {
+        printf ("set(int rhs)\n");
+        __gmpz_set_si(this.ptr, rhs);
+    }
+    void set(uint rhs)
+    {
+        __gmpz_set_ui(this.ptr, rhs);
     }
     bool tstbit (ulong x) {
         return __gmpz_tstbit (&_z, x);

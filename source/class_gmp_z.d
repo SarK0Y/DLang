@@ -138,21 +138,21 @@ extern (C) class GmpInt
         );
         mixin(Init_zz);
     }
-    static zz* mk () {
-        auto __zz = new zz(0);
-        auto size_zz = __traits (classInstanceSize, GmpInt);
-        auto alloc_zz = cast (zz) malloc (size_zz);
-        alloc_zz = __zz.dup;
-        alloc_zz.name = "alloc_zz";
-        alloc_zz.prnt;
-        zz* ret = &alloc_zz;
+    static zz mk () {
+        const void [] __zz = __traits (initSymbol, zz);
+        //auto size_zz = __traits (classInstanceSize, GmpInt);
+        auto size_zz = __zz.length;
+        auto _alloc_zz = malloc (size_zz);
+        _alloc_zz[0..size_zz] = cast (void []) __zz[];
+        zz ret = cast (zz) _alloc_zz;
+        ret.name = "alloc_zz";
+        ret.prnt;
         ret.prnt;
         return ret;
     }
-    static zz* _mk()
+    static zz _mk()
     {
-        auto __zz = new zz(0);
-        zz* ret = &__zz;
+        auto ret = new zz(0);
         return ret;
     }
     static zz mk0()

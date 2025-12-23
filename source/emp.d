@@ -107,7 +107,7 @@ extern (C) void EMP (
 }
 extern (C) ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
-    zz* map = zz._mk;
+    zz map = zz.mk;
     printf ("check map in __emp pointer: %p\n", map);
     ulong cnt = 0;
     if (*key == *target) {
@@ -151,7 +151,8 @@ end:
     prnt("check assert\n");
     //(*map).prnt;
     dt.destroy;
-    return ret_emp (map, cnt);
+    auto _map = &map;
+    return ret_emp (_map, cnt);
 }
 void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string decoded ) {
     if (!exists(key_file))

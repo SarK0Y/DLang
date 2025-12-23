@@ -328,7 +328,7 @@ extern (C) class GmpInt
        writeln ("End lshift");
     }
     uint len () {
-        return __gmpz_size (&_z);
+        return __gmpz_size (&_z) * 8;
     }
     void prnt () {
         __gmp_printf ("Val: %Zd\n name: %s\nlen: %d\nmsb: %lld", this.ptr, name.ptr, this.len, this.msb );

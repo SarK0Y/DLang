@@ -51,7 +51,7 @@ extern (C) {
     );
     void __gmpz_export(
         const void * buf,
-        size_t count, //how many words to read
+        size_t* count, //how many words to read
         int order, // endian of words
         size_t size, // size of word
         int endian, // endian within word
@@ -189,24 +189,22 @@ extern (C) class GmpInt
     {
         printf("entry _export\n");
         debug {printf ("entry _export\n");}
-        auto buf_size = __gmpz_size( & _z) * 64;
-        debug {printf ("buf size for export: %lld ../64: %lld\n", buf_size, buf_size/64);}
-        auto buf = malloc (
-            buf_size
-        );
-        if (buf == null) {
-            writeln ("Can't allocate memory %s %s", __FILE_FULL_PATH__, __LINE__);
-            return null;
-        }
+        size_t buf_size;
+        auto _buf_size = this.len;
+        auto buf = malloc (_buf_size);
         __gmpz_export(
             buf,
-            buf_size,
+            &buf_size,
             BIG_WORD_1ST,
             1,
             BIG_BYTE_1ST,
             0,
-            &_z
+            this.ptr
         );
+        debug
+        {
+            printf("buf size for export: %lld\n", buf_size);
+        }
         return buf;
     }
     ~this()

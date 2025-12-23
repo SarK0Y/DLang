@@ -87,8 +87,9 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (&target_zz, &key_zz);
         debug { import core.stdc.stdio : printf; printf("check map pointer %p\n", map.dat); }
+        map.dat.name = "dat";
         map.dat.prnt;
-        void* dat = null;//map.dat._export ();
+        void* dat = map.dat._export ();
         debug
         {
             import core.stdc.stdio : printf;
@@ -107,7 +108,7 @@ extern (C) void EMP (
 }
 extern (C) ret_emp __emp (zz* target, zz* key) {
     auto dt = key.dup >> 1;
-    zz map = zz.mk;
+    zz map = zz._mk;
     printf ("check map in __emp pointer: %p\n", map);
     ulong cnt = 0;
     if (*key == *target) {

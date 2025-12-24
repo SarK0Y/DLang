@@ -1,7 +1,8 @@
 import core.stdc.stdio;
 import core.memory;
 import std.algorithm;
-import std.file;
+import std.file: 
+    write, read, exists, FileException;
 import std.exception;
 import gmp_z;
 import helpful;

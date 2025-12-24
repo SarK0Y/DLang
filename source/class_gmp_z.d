@@ -285,14 +285,17 @@ extern (C) class GmpInt
     }
     void opAssign(string op)(uint shift) if (op == ">>=")
     {
-        if (this == 1) {
-            
+        if (this == 0) {
+            return;
         }
         __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op)(uint shift) if (op == ">>")
     {
-       // writeln(">>");
+       if (this == 0)
+        {
+            return;
+        }
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op: "+")(zz y) {

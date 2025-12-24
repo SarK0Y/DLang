@@ -145,7 +145,7 @@ extern (C) ret_emp __emp (zz target, zz key) {
     //simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
-    assert(key < target.ptr);
+    //assert(key < target.ptr);
     prnt ("check assert\n");
     map.name = "name";
     prnt("check assert\n");

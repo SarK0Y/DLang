@@ -335,6 +335,10 @@ extern (C) class GmpInt
     void prnt () {
         __gmp_printf ("Val: %Zd\n name: %s\nlen: %d\nmsb: %lld", this.ptr, name.ptr, this.len, this.msb );
     }
+    void prnt_no_val()
+    {
+        __gmp_printf("name: %s\nlen: %d\nmsb: %lld",name.ptr, this.len, this.msb);
+    }
     zz opBinary(string op)(uint shift) if (op == "<<")
     {
         auto res = this.dup;

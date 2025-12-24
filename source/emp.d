@@ -87,8 +87,6 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
         auto map = __emp (target_zz, key_zz);
         debug { import core.stdc.stdio : printf; printf("check map pointer %p\n", map.dat); }
-        map.dat.name = "dat";
-        map.dat.prnt;
         void* dat = map.dat._export ();
         debug
         {
@@ -132,7 +130,7 @@ extern (C) ret_emp __emp (zz target, zz key) {
         if (key > target.ptr) {
             key -= dt;
             map.setbit (cnt);
-            printf ("cnt: %lld\n", cnt);
+       //     printf ("cnt: %lld\n", cnt);
         } else {
       //      printf ("no cnt\n");
             key += dt;
@@ -145,11 +143,11 @@ extern (C) ret_emp __emp (zz target, zz key) {
     //simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
-    //assert(key < target.ptr);
+    assert(key == target.ptr);
     prnt ("check assert\n");
     map.name = "name";
     prnt("check assert\n");
-    assert(dt.msb == 0);
+    map.prnt_no_val;
     dt.destroy;
     auto _map = &map;
     printf ("cnt %lld", cnt);

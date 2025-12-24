@@ -85,7 +85,7 @@ extern (C) void EMP (
         debug { import core.stdc.stdio : printf; printf("check target_zz\n"); }
         key_zz._import (key_arr.ptr, max_size_for_num);
         debug { import core.stdc.stdio : printf; printf("check _import\n"); }
-        auto map = __emp (&target_zz, &key_zz);
+        auto map = __emp (target_zz, key_zz);
         debug { import core.stdc.stdio : printf; printf("check map pointer %p\n", map.dat); }
         map.dat.name = "dat";
         map.dat.prnt;
@@ -106,19 +106,19 @@ extern (C) void EMP (
         writeln ("Failed to prepare files.", e.msg);
     }
 }
-extern (C) ret_emp __emp (zz* target, zz* key) {
+extern (C) ret_emp __emp (zz target, zz key) {
     auto dt = key.dup >> 1;
     zz map = zz._mk;
     printf ("check map in __emp pointer: %p\n", map);
     ulong cnt = 0;
-    if (*key == *target) {
+    if (key == target) {
         printf ("key == target, abort __emp(..)");
         goto end;
     }
-    if (*key != target) {
+    if (key != target) {
         printf ("key != target\n");
     }
-    assert(*key != target.ptr);
+    assert(key != target.ptr);
     printf("start while-loop\n");
     while (0==0) {
         printf ("tst while loop");
@@ -129,30 +129,30 @@ extern (C) ret_emp __emp (zz* target, zz* key) {
     map.prnt;
     simply_print_time ("start tst for __emp");
     for (;;) {
-        if (*key > target) {
-            *key -= dt;
-            printf("0cnt: %lld\n", cnt);
+        if (key > target.ptr) {
+            key -= dt;
             map.setbit (cnt);
             printf ("cnt: %lld\n", cnt);
         } else {
-            printf ("no cnt\n");
-            *key += dt;
+      //      printf ("no cnt\n");
+            key += dt;
         }
-        if (dt.msb == 0 || *key == target.ptr ) { break; }
-        printf ("dt.msb == %lld, map.msb %lld, %s\n", dt.msb, map.msb, map.name.ptr);
+        if (dt.msb == 0 || key == target.ptr ) { break; }
+       // printf ("dt.msb == %lld, map.msb %lld, %s\n", dt.msb, map.msb, map.name.ptr);
         dt >>= 1;
         cnt++;
     }
     //simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
-    assert(*key < target.ptr);
+    assert(key < target.ptr);
     prnt ("check assert\n");
     map.name = "name";
     prnt("check assert\n");
-    //(*map).prnt;
+    assert(dt.msb == 0);
     dt.destroy;
     auto _map = &map;
+    printf ("cnt %lld", cnt);
     return ret_emp (_map, cnt);
 }
 void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string decoded ) {

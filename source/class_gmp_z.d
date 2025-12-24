@@ -162,9 +162,6 @@ extern (C) class GmpInt
     }
     size_t msb () {
         ulong msb =  __gmpz_sizeinbase (&_z, 2);
-        ulong len = this.len * 64;
-        if (msb > len)
-            return 0;
         return msb;
     }
    void _import (void* buf, size_t buf_size)
@@ -288,7 +285,9 @@ extern (C) class GmpInt
     }
     void opAssign(string op)(uint shift) if (op == ">>=")
     {
-        writeln(">>=");
+        if (this == 1) {
+            
+        }
         __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op)(uint shift) if (op == ">>")

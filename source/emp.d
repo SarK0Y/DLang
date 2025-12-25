@@ -3,7 +3,7 @@ import core.memory;
 import std.algorithm;
 import std.math;
 import std.file: 
-    write, read, exists, FileException;
+    write, read, exists, FileException, remove;
 import std.exception;
 import gmp_z;
 import helpful;
@@ -64,6 +64,9 @@ extern (C) void EMP (
             writeln("Dear User, Key file for compression/encoding doesn't exist.");
             return;
         }
+        try {
+            remove (file_out);
+        } catch (FileException e) {}
         target = File (file_target, "r");
         key = File (Key, "r");
         scope (exit) {
@@ -104,6 +107,7 @@ extern (C) void EMP (
         map.dat.name = "tst dat";
         map.dat.prnt_no_val;
         double dat_len = map.dat.msb / 8;
+        printf ("dat len %f", dat_len);
         size_t _dat_len;
         if (dat_len > floor (dat_len) ) {
             _dat_len = cast(size_t)floor(dat_len) + 1;
@@ -112,7 +116,8 @@ extern (C) void EMP (
         }
         write (file_out, dat[0.._dat_len]);
         ulong [] size_map = [map.size];
-        write (file_out, size_map);
+        auto append = File (file_out, "a");
+        append.write (file_out, size_map);
     }
     catch (FileException e ) {
         writeln ("Failed to prepare files.", e.msg);

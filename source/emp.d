@@ -12,18 +12,18 @@ import std.string;
 import std.uni;
 import std.conv;
 extern (C) struct ret_emp {
-    zz* dat;
+    zz dat;
     size_t size;
     static ret_emp mk () {
         ret_emp re = ret_emp (null, 0);
         return re;        
     }
 }
-ret_emp* save_for_unitst (ret_emp x) {
+ret_emp save_for_unitst (ret_emp x) {
     static ret_emp sav = ret_emp.mk();
-    if (x.dat != null) {
+    if (sav.dat is null || x.dat != sav.dat.ptr) {
         sav = x;
-    } return &sav;
+    } return sav;
 }
 extern (C) void EMP_default(
     string file_target = "/tst/algo 30.png",
@@ -101,6 +101,8 @@ extern (C) void EMP (
             return;
         }
         save_for_unitst(map);
+        map.dat.name = "tst dat";
+        map.dat.prnt_no_val;
         double dat_len = map.dat.msb / 8;
         size_t _dat_len;
         if (dat_len > floor (dat_len) ) {
@@ -161,9 +163,8 @@ end:
     prnt("check assert\n");
     map.prnt_no_val;
     dt.destroy;
-    auto _map = &map;
     printf ("cnt %lld", cnt);
-    return ret_emp (_map, cnt);
+    return ret_emp (map, cnt);
 }
 void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string decoded ) {
     if (!exists(key_file))

@@ -1,6 +1,7 @@
 import core.stdc.stdio;
 import core.memory;
 import std.algorithm;
+import std.math;
 import std.file: 
     write, read, exists, FileException;
 import std.exception;
@@ -100,6 +101,16 @@ extern (C) void EMP (
             return;
         }
         save_for_unitst(map);
+        double dat_len = map.dat.msb / 8;
+        size_t _dat_len;
+        if (dat_len > floor (dat_len) ) {
+            _dat_len = cast(size_t)floor(dat_len) + 1;
+        } else {
+            _dat_len = cast(size_t) dat_len;
+        }
+        write (file_out, dat[0.._dat_len]);
+        ulong [] size_map = [map.size];
+        write (file_out, size_map);
     }
     catch (FileException e ) {
         writeln ("Failed to prepare files.", e.msg);
@@ -141,7 +152,7 @@ extern (C) ret_emp __emp (zz target, zz key) {
         dt >>= 1;
         cnt++;
     }
-    //simply_print_time("end tst for __emp");
+    simply_print_time("end tst for __emp");
     //GC.free (dt); // for void*
 end:
     assert(key == target.ptr);

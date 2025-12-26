@@ -172,7 +172,7 @@ end:
     printf ("cnt %lld", cnt);
     return ret_emp (map, cnt);
 }
-void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string decoded ) {
+void __tstdecode_emp (ret_emp take_emp, string key_file, string orig, string decoded ) {
     if (!exists(key_file))
     {
         writefln("Dear User, file to decompress/decode doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
@@ -188,17 +188,15 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         auto key = File(key_file, "r");
         key.rawRead (key_arr);
         key.close ();
-        auto orig = File(orig, "r");
-        orig.rawRead(orig_arr);
-        orig.close();
+        auto orig_file = File(orig, "r");
+        orig_file.rawRead(orig_arr);
+        orig_file.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }
     auto key = new zz (key_arr.ptr, key_arr.length);
     key_arr.destroy;
-    void[] _orig = read(orig);
-    auto __orig = new zz(_orig.ptr,_orig.length);
-    _orig.destroy;
+    auto _orig = new zz(orig_arr.ptr,orig_arr.length);
     size_t msb = take_emp.dat.msb;
     size_t cnt = 0;
     auto dat = take_emp.dat;
@@ -216,7 +214,7 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         key += dt;
         dt >>= 1;
     }
-    if (__orig != key) {
+    if (_orig != key) {
         mixin Msg! ("Failed to reproduce orig file");
         mixin (out0);
     }

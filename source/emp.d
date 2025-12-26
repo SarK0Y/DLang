@@ -142,7 +142,8 @@ extern (C) ret_emp __emp (zz target, zz key) {
         break;
     }
     map.name = "name1";
-    map.set (0);
+    //map.set (0);
+    map = 0;
     map.prnt;
     simply_print_time ("start tst for __emp");
     for (;;) {

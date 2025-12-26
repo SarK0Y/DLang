@@ -188,8 +188,9 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         auto key = File(key_file, "r");
         key.rawRead (key_arr);
         key.close ();
-        auto key1 = File(orig, "r");
-        key1.close();
+        auto orig = File(orig, "r");
+        orig.rawRead(orig_arr);
+        orig.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }

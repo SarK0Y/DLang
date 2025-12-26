@@ -183,15 +183,16 @@ void __tstdecode_emp (ret_emp* take_emp, string key_file, string orig, string de
         writefln("Dear User, orig file doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
+    void [] key_arr, orig_arr;
     try {
-        auto key = File(key_file, "rb");
+        auto key = File(key_file, "r");
+        key.rawRead (key_arr);
         key.close ();
-        auto key1 = File(orig, "rb");
+        auto key1 = File(orig, "r");
         key1.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }
-    void [] key_arr = read (key_file);
     auto key = new zz (key_arr.ptr, key_arr.length);
     key_arr.destroy;
     void[] _orig = read(orig);

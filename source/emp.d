@@ -191,24 +191,24 @@ void __tstdecode_emp (ret_emp take_emp, string key_file, string orig, string dec
         writefln("Dear User, orig file doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
-    void* key_arr, orig_arr;
+    void [] key_arr, orig_arr;
     try {
         auto key = File(key_file, "r");
-        auto _key_arr = new void [key.length];
+        auto _key_arr = new void [key.size];
         key.rawRead (_key_arr);
-        key_arr = _key_arr.ptr;
+        key_arr = _key_arr;
         key.close ();
         auto orig_file = File(orig, "r");
-        auto _orig_arr = new void[orig_file.length];
+        auto _orig_arr = new void[orig_file.size];
         orig_file.rawRead(_orig_arr);
-        orig_arr = _orig_arr.ptr;
+        orig_arr = _orig_arr;
         orig_file.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }
-    auto key = new zz (key_arr, key_arr.length);
+    auto key = new zz (key_arr.ptr, key_arr.length);
     key_arr.destroy;
-    auto _orig = new zz(orig_arr,orig_arr.length);
+    auto _orig = new zz(orig_arr.ptr, orig_arr.length);
     size_t msb = take_emp.dat.msb;
     size_t cnt = 0;
     auto dat = take_emp.dat;

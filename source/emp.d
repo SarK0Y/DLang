@@ -19,10 +19,11 @@ extern (C) struct ret_emp {
         return re;        
     }
 }
-ret_emp save_for_unitst (ret_emp x) {
+ret_emp save_for_unitst (ret_emp* x) {
     static ret_emp sav = ret_emp.mk();
-    if (sav.dat is null || x.dat != sav.dat.ptr) {
-        sav = x;
+    if (x is null) return sav;
+    if (sav.dat is null || (*x).dat != sav.dat.ptr) {
+        sav = *x;
     } return sav;
 }
 extern (C) void EMP_default(
@@ -41,7 +42,14 @@ extern (C) void EMP_default(
         file_out,
         word_order,
         byte_order
-    ); return;
+    );
+    __tstdecode_emp (
+        save_for_unitst (cast(ret_emp*)null ),
+        Key,
+        file_target0,
+        ""
+    ); 
+    return;
 }
 extern (C) void EMP (
     ref string file_target,
@@ -103,7 +111,7 @@ extern (C) void EMP (
             writeln ("Failed to gen map ", __FILE_FULL_PATH__, __LINE__);
             return;
         }
-        save_for_unitst(map);
+        save_for_unitst(&map);
         map.dat.name = "tst dat";
         map.dat.prnt_no_val;
         double dat_len = map.dat.msb / 8;
@@ -183,20 +191,24 @@ void __tstdecode_emp (ret_emp take_emp, string key_file, string orig, string dec
         writefln("Dear User, orig file doesn't exist. %s %s", __FILE_FULL_PATH__, __LINE__);
         return;
     }
-    void [] key_arr, orig_arr;
+    void* key_arr, orig_arr;
     try {
         auto key = File(key_file, "r");
-        key.rawRead (key_arr);
+        auto _key_arr = new void [key.length];
+        key.rawRead (_key_arr);
+        key_arr = _key_arr.ptr;
         key.close ();
         auto orig_file = File(orig, "r");
-        orig_file.rawRead(orig_arr);
+        auto _orig_arr = new void[orig_file.length];
+        orig_file.rawRead(_orig_arr);
+        orig_arr = _orig_arr.ptr;
         orig_file.close();
     } catch (FileException e) {
         writefln("Dear User, i been failed to open \n%s. \n%s %s", e.msg, __FILE_FULL_PATH__, __LINE__);
     }
-    auto key = new zz (key_arr.ptr, key_arr.length);
+    auto key = new zz (key_arr, key_arr.length);
     key_arr.destroy;
-    auto _orig = new zz(orig_arr.ptr,orig_arr.length);
+    auto _orig = new zz(orig_arr,orig_arr.length);
     size_t msb = take_emp.dat.msb;
     size_t cnt = 0;
     auto dat = take_emp.dat;

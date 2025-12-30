@@ -9,7 +9,7 @@ import gmp_z; // uses the same zz/GmpInt wrapper already in the repo
 struct NafMaps {
     zz pos;    // bits where digit == +1
     zz neg;    // bits where digit == -1
-    size_t length; // number of positions processed (highest position + 1)
+    uint length; // number of positions processed (highest position + 1)
 }
 
 /**
@@ -27,7 +27,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
     // Determine sign and work with absolute difference D = abs(target - key)
     bool negative = false;
     zz D;
-    if (target < key) {
+    if (target < key.ptr) {
         negative = true;
         D = (key - target).dup;
     } else {
@@ -36,7 +36,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
 
     zz pos = new zz(0); // positions carrying +1 (in NAF)
     zz neg = new zz(0); // positions carrying -1 (in NAF)
-    size_t i = 0;
+    uint i = 0;
     auto one = new zz(1);
 
     // Process until D == 0
@@ -75,7 +75,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
  */
 zz naf_reconstruct(NafMaps nm) {
     zz res = new zz(0);
-    for (size_t i = 0; i < nm.length; ++i) {
+    for (uint i = 0; i < nm.length; ++i) {
         if (nm.pos.tstbit(i)) {
             zz step = new zz(1);
             step <<= i;
@@ -112,3 +112,4 @@ unittest {
     assert(rec == expected, "NAF reconstruction failed");
     writeln("NAF unit test passed.");
 }
+// Copilot made errors which prevent this file to compile correctly.

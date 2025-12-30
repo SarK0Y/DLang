@@ -283,16 +283,32 @@ extern (C) class GmpInt
         __gmpz_set_ui(&_z, rhs);
         return;
     }
-    void opAssign(string op)(uint shift) if (op == ">>=")
+    /*void opAssign(string op)(uint shift) if (op == ">>=")
     {
         if (this == 0) {
             return;
         }
         __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
+    }*/
+    void opAssign(string op)(uint shift) if (op == ">>")
+    {
+       if (this == 0)
+        {
+            return;
+        }
+        __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
+    }
+    void opAssign(string op)(uint shift) if (op == "<<")
+    {
+        if (this == 0)
+        {
+            return;
+        }
+        __gmpn_lshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
     void opOpAssign(string op)(uint shift) if (op == ">>")
     {
-       if (this == 0)
+        if (this == 0)
         {
             return;
         }

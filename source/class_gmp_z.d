@@ -26,6 +26,7 @@ extern (C) {
     int __gmpz_set_str(Z* rop, const char* str, int base);
     int __gmpz_set(Z* rop, Z* rhs );
     int __gmpz_set_ui(Z* rop, uint rhs);
+    void __gmpz_neg(Z* rop, Z* rhs);
     void __gmpz_setbit(Z* rop, ulong rhs);
     void __gmpz_clrbit(Z* rop, ulong rhs);
     bool __gmpz_tstbit(Z* rop, ulong rhs);
@@ -113,9 +114,16 @@ extern (C) class GmpInt
         __gmpz_init(&_z);
         mixin (Init_zz);
     }
-    this( int x)
+  /*  this( uint x)
     {
         __gmpz_set_ui(&_z, x);
+        mixin(Init_zz);
+        this.name = "";
+    }*/
+    this(int x)
+    {
+        __gmpz_init(&_z);
+        __gmpz_set_si(&_z, x);
         mixin(Init_zz);
         this.name = "";
     }
@@ -206,7 +214,7 @@ extern (C) class GmpInt
     }
     ~this()
     {
-        __gmpz_clear(&_z);
+        __gmpz_clear(this.ptr);
     }
     Z val () {
         return _z;
@@ -283,13 +291,10 @@ extern (C) class GmpInt
         __gmpz_set_ui(&_z, rhs);
         return;
     }
-    /*void opAssign(string op)(uint shift) if (op == ">>=")
+    void opUnary(string op: "-") ()
     {
-        if (this == 0) {
-            return;
-        }
-        __gmpn_rshift (_z._mp_d, _z._mp_d, _z._mp_size, shift);
-    }*/
+       __gmpz_neg (this.ptr, this.ptr);
+    }
     void opAssign(string op)(uint shift) if (op == ">>")
     {
        if (this == 0)

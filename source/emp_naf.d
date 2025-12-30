@@ -34,13 +34,13 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
         D = (target - key).dup;
     }
 
-    zz pos = new zz(0); // positions carrying +1 (in NAF)
-    zz neg = new zz(0); // positions carrying -1 (in NAF)
-    uint i = 0;
+    zz pos = zz.mk; // positions carrying +1 (in NAF)
+    zz neg = zz.mk; // positions carrying -1 (in NAF)
     auto one = new zz(1);
-
+    uint i = 0;
     // Process until D == 0
-    while (D.msb() > 0) {
+    auto _0 = zz.mk;
+    while (D > &_0) {
         if (D.tstbit(0)) { // D is odd
             // Look at the low two bits of D to decide whether to use +1 or -1.
             // val = D mod 4 computed from bits 0 and 1
@@ -90,6 +90,16 @@ zz naf_reconstruct(NafMaps nm) {
 }
 
 unittest {
+    auto tst_neg = new zz (1);
+    -tst_neg;
+    int int_m_1 = -1;
+    zz m_1 = new zz ();
+    m_1 = "-1";
+    tst_neg.name = "tst_neg";
+    m_1.name = "minus 1";
+    m_1.prnt;
+    tst_neg.prnt;
+    assert (tst_neg == &m_1);
     writeln("tst: NAF variant");
     auto target = new zz(37); // example values
     auto key = new zz(10);

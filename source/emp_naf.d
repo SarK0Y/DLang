@@ -29,9 +29,11 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
     zz D =zz.mk;
     if (target < key.ptr) {
         negative = true;
-        D = key - target;
+        D = (key - target).dup;
+        (key - target).prnt;
     } else {
-        D = target - key;
+        D = (target - key).dup;
+        (key - target).prnt;
     }
     D.name = "D";
     zz pos = zz.mk; // positions carrying +1 (in NAF)
@@ -40,7 +42,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
     uint i = 0;
     // Process until D == 0
     auto _0 = zz.mk;
-    while (D > _0.ptr) {
+    while (_0 > _0.ptr) {
         if (D.tstbit(0)) { // D is odd
             // Look at the low two bits of D to decide whether to use +1 or -1.
             // val = D mod 4 computed from bits 0 and 1
@@ -60,10 +62,10 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
             }
         }
         // Shift D right by 1 (divide by 2, floor)
-        D.prnt_no_val;
-        D.prnt;
+      //  D.prnt_no_val;
+       // D.prnt;
         D >>= 1;
-        D.prnt_no_val;
+        //D.prnt_no_val;
         D.prnt;
         ++i;
     }

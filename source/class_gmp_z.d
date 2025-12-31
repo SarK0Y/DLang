@@ -456,6 +456,7 @@ extern (C) class GmpInt
     GmpInt opBinary(string op : "-")(GmpInt rhs)
     {
         GmpInt result = new GmpInt();
+        result.name = "result";
         __gmpz_sub(result.ptr, this.ptr, rhs.ptr);
         return result;
     }

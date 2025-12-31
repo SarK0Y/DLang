@@ -42,7 +42,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
     uint i = 0;
     // Process until D == 0
     auto _0 = zz.mk;
-    while (_0 > _0.ptr) {
+    while (D > _0.ptr) {
         if (D.tstbit(0)) { // D is odd
             // Look at the low two bits of D to decide whether to use +1 or -1.
             // val = D mod 4 computed from bits 0 and 1
@@ -66,7 +66,7 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
        // D.prnt;
         D >>= 1;
         //D.prnt_no_val;
-        D.prnt;
+       // D.prnt;
         ++i;
     }
 

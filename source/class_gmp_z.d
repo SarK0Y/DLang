@@ -2,7 +2,7 @@
 module gmp_z;
 import std.stdio;
 import core.stdc.stdlib : malloc, free;
-
+import std.traits : Unsigned, Unqual; // used by expression templates
 const int BIG_WORD_1ST = 1;
 const int LEAST_WORD_1ST = -1;
 const int HOST_ENDIAN = 0;
@@ -23,6 +23,12 @@ extern (C)
 {
     //    import std.c.stdlib;
     void __gmpz_init(Z* integer);
+    void __gmpz_init(Z*);
+    void __gmpz_init_set(Z*, Z*);
+    void __gmpz_init_set_d(Z*, double);
+    void __gmpz_init_set_si(Z*, long);
+    void __gmpz_init_set_ui(Z*, ulong);
+    int __gmpz_init_set_str(Z*, const char*, int);
     void __gmpz_clear(Z* integer);
     void __gmpz_add(Z* rop, const Z* op1, const Z* op2);
     void __gmpz_sub(Z* rop, const Z* op1, const Z* op2);
@@ -127,12 +133,12 @@ extern (C) class GmpInt
         mixin(Init_zz);
         this.name = "";
     }
-    /*  this( uint x)
+    this(T)(T value) @trusted if (__traits(isArithmetic, T))
     {
         __gmpz_set_ui(&_z, x);
         mixin(Init_zz);
         this.name = "";
-    }*/
+    }
     this(int x)
     {
         __gmpz_init(&_z);

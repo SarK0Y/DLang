@@ -394,14 +394,20 @@ extern (C) class GmpInt
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
 
-    void opOpAssign(string op : "+")(zz y)
+  void opOpAssign(string op)(zz y)
     {
-        __add(this.ptr, y.ptr, max_n);
-    }
-
-    void opOpAssign(string op : "-")(zz y)
-    {
-        __sub(this.ptr, y.ptr, max_n);
+        static if (op == "+")
+        {
+            __add(this.ptr, y.ptr, max_n);
+        }
+        else static if (op == "-")
+        {
+            __sub(this.ptr, y.ptr, max_n);
+        }
+        else
+        {
+            static assert(0, "Unsupported op: " ~ op);
+        }
     }
 
     void opOpAssign(string op)(uint shift) if (op == "<<")

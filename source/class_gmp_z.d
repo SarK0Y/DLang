@@ -22,7 +22,6 @@ extern (C)
 extern (C)
 {
     //    import std.c.stdlib;
-    void __gmpz_init(Z* integer);
     void __gmpz_init(Z*);
     void __gmpz_init_set(Z*, Z*);
     void __gmpz_init_set_d(Z*, double);
@@ -107,6 +106,9 @@ extern (C) class GmpInt
         alias zz = GmpInt;
         static bool max_speed_ops = false;
         string name;
+    }
+    void show_mpz () {
+        printf ("alloc: %d\nsize: %d\narr adr: %p\n", _z._mp_alloc, _z._mp_size, _z._mp_d);
     }
     static void _0_max_n()
     {

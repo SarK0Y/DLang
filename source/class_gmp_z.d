@@ -108,7 +108,19 @@ extern (C) class GmpInt
         string name;
     }
     void show_mpz () {
-        printf ("alloc: %d\nsize: %d\narr adr: %p\n", _z._mp_alloc, _z._mp_size, _z._mp_d);
+        printf("_z adr: %p\n", &_z);
+        printf ("alloc: %d\n", _z._mp_alloc);
+        printf("size: %d\n",_z._mp_size);
+        printf("arr adr: %p\n", _z._mp_d);
+        if (&_z == _z._mp_d) {
+            printf("_z._mp_d == &_z\n");
+        }
+        else if (&_z > _z._mp_d) {
+            printf("_z._mp_d < &_z\n");
+        }
+        else {
+            printf("_z._mp_d > &_z\n");
+        }
     }
     static void _0_max_n()
     {

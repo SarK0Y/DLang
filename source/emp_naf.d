@@ -65,7 +65,9 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
                 D.prnt;
             } else { // u == -1
                 neg.setbit(i);
+                D.show_mpz;
                 D += one; // D = D + 1
+                D.show_mpz;
                 D.prnt;
             }
         }

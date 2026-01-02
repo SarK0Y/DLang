@@ -135,7 +135,12 @@ extern (C) class GmpInt
     }
     this(T)(T value) @trusted if (__traits(isArithmetic, T))
     {
-        __gmpz_set_ui(&_z, x);
+        static if (__traits(isUnsigned, T))
+            __gmpz_init_set_ui(this.ptr, value);
+        else static if (__traits(isFloating, T))
+            __gmpz_init_set_d(this.ptr, value);
+        else
+            __gmpz_init_set_si(this.ptr, value); // isSigned
         mixin(Init_zz);
         this.name = "";
     }
@@ -375,9 +380,15 @@ extern (C) class GmpInt
     }
 
     void opOpAssign(string op)(uint shift) if (op == ">>")
-    {
-        if (this == 0)
-        {
+    {   try {
+            if (this == 0)
+            {
+                return;
+            }
+        }
+        catch (Exception e) {
+            writefln("Get exception: %s\nLine: %s\nFile: %s\n", e.msg, __LINE__, __FILE_FULL_PATH__);
+            this.prnt;
             return;
         }
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
@@ -385,12 +396,12 @@ extern (C) class GmpInt
 
     void opOpAssign(string op : "+")(zz y)
     {
-        __add(&_z, y.ptr, max_n);
+        __add(this.ptr, y.ptr, max_n);
     }
 
     void opOpAssign(string op : "-")(zz y)
     {
-        __sub(&_z, y.ptr, max_n);
+        __sub(this.ptr, y.ptr, max_n);
     }
 
     void opOpAssign(string op)(uint shift) if (op == "<<")
@@ -454,14 +465,14 @@ extern (C) class GmpInt
 
     GmpInt opBinary(string op : "+")(GmpInt rhs)
     {
-        GmpInt result = new GmpInt();
+        GmpInt result = zz.mk;
         __gmpz_add(result.ptr, this.ptr, rhs.ptr);
         return result;
     }
 
     GmpInt opBinary(string op : "-")(GmpInt rhs)
     {
-        GmpInt result = new GmpInt();
+        GmpInt result = zz.mk;
         result.name = "result";
         __gmpz_sub(result.ptr, this.ptr, rhs.ptr);
         return result;
@@ -501,7 +512,10 @@ extern (C) class GmpInt
     {
         return __gmpz_cmp(&_z, x.ptr) == 0;
     }
-
+    int opCmp(int x)
+    {
+        return __gmpz_cmp_si(&_z, x);
+    }
     int opCmp(Z* x)
     {
         return __gmpz_cmp(&_z, x);

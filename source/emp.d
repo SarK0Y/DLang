@@ -252,6 +252,8 @@ template Msg(const char [] msg )
 unittest
 {
     writeln ("\n\ntst mod emp.d\n");
+    auto try_0 = zz.mk;
+    assert (try_0 == 0);
     const char [] tst_mixin = "tst mixin";
     mixin Msg!(tst_mixin);
     auto _0 = new zz (3);

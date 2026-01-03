@@ -48,7 +48,8 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
     auto _D = D.dup;
     _D >>= 1;
     while (D > 0) {
-        D.prnt;
+       // D.prnt;
+        printf ("I: %du\n", i);
         if (D.tstbit(0)) { // D is odd
             // Look at the low two bits of D to decide whether to use +1 or -1.
             // val = D mod 4 computed from bits 0 and 1
@@ -61,23 +62,24 @@ extern (C) NafMaps naf_maps(zz target, zz key) {
 
             if (u == 1) {
                 pos.setbit(i);
-                D -= one; // D = D - 1
-                D.prnt;
+               // D -= one; // D = D - 1
+                //D.prnt;
             } else { // u == -1
                 neg.setbit(i);
-                D.show_mpz;
-                D += one; // D = D + 1
-                D.show_mpz;
-                D.prnt;
+              //  D.show_mpz;
+               // D += one; // D = D + 1
+               // D.show_mpz;
+                //D.prnt;
             }
         }
         // Shift D right by 1 (divide by 2, floor)
       //  D.prnt_no_val;
-        D.prnt;
+      //  D.prnt;
         D >>= 1;
         //D.prnt_no_val;
        // D.prnt;
         ++i;
+        printf ("I: %du\n", i);
     }
 
     return NafMaps(pos, neg, i);

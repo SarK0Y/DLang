@@ -378,10 +378,10 @@ extern (C) class GmpInt
 
     void opAssign(string op)(uint shift) if (op == ">>")
     {
-        if (this == 0)
+       /* if (this == 0)
         {
             return;
-        }
+        }*/
         __gmpn_rshift(_z._mp_d, _z._mp_d, _z._mp_size, shift);
     }
 
@@ -413,10 +413,12 @@ extern (C) class GmpInt
     {
         static if (op == "+")
         {
+            //printf ("__add(this.ptr, y.ptr, max_n);");
             __add(this.ptr, y.ptr, max_n);
         }
         else static if (op == "-")
         {
+          //  printf("__sub(this.ptr, y.ptr, max_n);");
             __sub(this.ptr, y.ptr, max_n);
         }
         else

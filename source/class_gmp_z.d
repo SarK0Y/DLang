@@ -157,14 +157,15 @@ extern (C) class GmpInt
             __gmpz_init_set_si(this.ptr, value); // isSigned
         mixin(Init_zz);
         this.name = "";
+        printf ("this(T)(T value) @trusted if (__traits(isArithmetic, T))\n");
     }
-    this(int x)
+    /*this(int x)
     {
         __gmpz_init(&_z);
         __gmpz_set_si(&_z, x);
         mixin(Init_zz);
         this.name = "";
-    }
+    }*/
 
     this(return scope GmpInt x)
     {

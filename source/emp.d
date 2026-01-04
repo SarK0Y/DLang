@@ -251,6 +251,13 @@ template Msg(const char [] msg )
 }
 unittest
 {
+    auto _1 = new zz (1);
+    auto _31 = new zz (31);
+    _31.name = "_31";
+    for (int u = 0; u < 50; u++) {
+        _31 -= _1;
+    }
+    _31.prnt;
     writeln ("\n\ntst mod emp.d\n");
     auto try_0 = zz.mk;
     assert (try_0 == 0);

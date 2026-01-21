@@ -255,7 +255,8 @@ unittest
     auto _31 = new zz (31);
     _31.name = "_31";
     for (int u = 0; u < 50; u++) {
-        _31 -= _1;
+        _31 += _1;
+        _31 >>= 1;
     }
     _31.prnt;
     writeln ("\n\ntst mod emp.d\n");

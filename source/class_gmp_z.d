@@ -31,6 +31,7 @@ extern (C)
     void __gmpz_clear(Z* integer);
     void __gmpz_add(Z* rop, const Z* op1, const Z* op2);
     void __gmpz_sub(Z* rop, const Z* op1, const Z* op2);
+    void __gmpz_xor(Z* rop, const Z* op1, const Z* op2);
     int __gmpz_set_str(Z* rop, const char* str, int base);
     int __gmpz_set(Z* rop, Z* rhs);
     int __gmpz_set_ui(Z* rop, uint rhs);
@@ -421,6 +422,10 @@ extern (C) class GmpInt
           //  printf("__sub(this.ptr, y.ptr, max_n);");
             __sub(this.ptr, y.ptr, max_n);
         }
+        else static if (op == "^")
+        {
+            __gmpz_xor(this.ptr, y.ptr, max_n);
+        }
         else
         {
             static assert(0, "Unsupported op: " ~ op);
@@ -485,7 +490,12 @@ extern (C) class GmpInt
         __gmpn_rshift(ptr._mp_d, ptr._mp_d, ptr._mp_size, shift);
         return res;
     }
-
+    GmpInt opBinary(string op : "^")(GmpInt rhs)
+    {
+        GmpInt result = zz.mk;
+        __gmpz_xor(result.ptr, this.ptr, rhs.ptr);
+        return result;
+    }
     GmpInt opBinary(string op : "+")(GmpInt rhs)
     {
         GmpInt result = zz.mk;
@@ -674,6 +684,9 @@ unittest
     auto res = _1 + _2;
     auto _3 = new zz(3);
     auto cmp = (res == _3.ptr);
+    auto xor_ = _1 ^ _2;
+    xor_.name = "xor";
+    xor_.prnt;
     res.prnt;
     writefln("_1 + _2 == _3 = %d", cmp);
     auto sub = _3 - _1;
